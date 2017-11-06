@@ -1,0 +1,88 @@
+<resources>
+    <string name="app_name">谐波监测</string>
+    <!-- 公用术语-->
+    <string name="jiancedianchaxun">监测点查询</string>
+    <string name="shijianmingxi">事件明细</string>
+    <string name="zantaigaojing">暂态告警</string>
+    <string name="wentaigaojing">稳态告警</string>
+    <string name="gongdiandanwei">供电单位</string>
+    <string name="dianzhanmingcheng">电站名称</string>
+    <string name="muxianmingcheng">母线名称</string>
+    <string name="xianlumingcheng">线路名称</string>
+    <string name="shijianleixng">事件类型</string>
+    <string name="xiangbie">相别</string>
+    <string name="fashengshijian">发生时间</string>
+    <string name="chixushijian">持续时间(ms)</string>
+    <string name="wanzhenglv">完整率</string>
+    <string name="zaixianlv_one">在线率1</string>
+    <string name="zaixianlv_two">在线率2(数据量)</string>
+    <string name="zhibiaogailan">指标概览</string>
+    <string name="jiancedianzonglan">监测点总览</string>
+    <string name="jiancedian">监测点</string>
+    <string name="zaiyun">在运</string>
+    <string name="zhengchang">正常</string>
+    <string name="yichang">异常</string>
+    <string name="tingyun">停运</string>
+    <string name="hegelv">-合格率</string>
+    <string name="guojizhi">国标值</string>
+    <string name="shijizhi">实际值</string>
+    <string name="yuechuzhi">越出值</string>
+    <string name="yuexianmingxi">越限明细</string>
+    <string name="zhibiaoleixing">指标类型</string>
+    <string name="login">登录</string>
+    <string name="password">密码</string>
+    <string name="username">账号</string>
+    <string name="xiebojiancejiankongxitong">谐波监测监控系统</string>
+    <string name="clearcache">清理缓存</string>
+    <string name="userinfo">用户信息</string>
+    <string name="exit">退出</string>
+
+    <!-- 地区名称-->
+    <string name="tianjin">天津</string>
+    <string name="wuqing">武清</string>
+    <string name="baodi">宝坻</string>
+    <string name="binhai">滨海</string>
+    <string name="chengdong">城东</string>
+    <string name="chengxi">城西</string>
+    <string name="dongli">东丽</string>
+    <string name="jianxiu">检修</string>
+    <!-- 专业术语-->
+    <string name="dianyazanjiang">电压暂降</string>
+    <string name="dianyazansheng">电压暂升</string>
+    <string name="duanshizhongduan">短时中断</string>
+    <string name="canyudianya">残余电压(p.u.)</string>
+    <string name="pinpvpiancha">频率偏差</string>
+    <string name="dianyapiancha">电压偏差</string>
+    <string name="dianyabupinghengdu">电压不平衡度</string>
+    <string name="shanbian">闪变</string>
+    <string name="dianyaxiebojibianlv">电压谐波畸变率</string>
+    <string name="dianyaxiebohanyoulv">电压谐波含有率</string>
+    <string name="dianliuxiebohanyoulv">电流谐波含有率</string>
+    <string name="shanbianyuexian">闪变越限</string>
+    <string name="biandianzhan">变电站</string>
+    <string name="jianceduixiangleixing">监测对象类型</string>
+    <string name="jianceduixiangmingcheng">检测对象名称</string>
+    <string name="dianyadengji">电压等级</string>
+    <string name="zuixiaoduanlurongliang">最小短路容量</string>
+    <string name="gongdianshebeirongliang">供电设备容量</string>
+    <string name="yonghuxieyirongliang">用户协议容量</string>
+    <string name="jizhunrongliang">基准容量</string>
+    <string name="pt">PT变比</string>
+    <string name="ct">CT变比</string>
+    <string name="zhongduanchangjia">终端厂家</string>
+    <string name="zhongduanxinghao">终端型号</string>
+
+
+    <string name="listview_header_hint_normal">下拉刷新</string>
+    <string name="listview_header_hint_release">释放立即刷新</string>
+    <string name="listview_loading">正在加载</string>
+    <string name="nomore_loading">没有了</string>
+    <string name="refreshing">正在刷新</string>
+    <string name="refresh_done">刷新完成</string>
+    <string name="listview_header_last_time">上次更新时间：</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+
+</resources>

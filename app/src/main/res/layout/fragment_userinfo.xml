@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#ffffff">
+    <com.tablaoutviewpagerdemo.a1111.demoxiebo.ui.CircleImageView.CircleImageView
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        android:background="@mipmap/ic_launcher_round"
+        android:id="@+id/info_civ"
+        android:layout_centerInParent="true"/>
+
+
+
+    <Button
+        android:id="@+id/cache"
+        android:layout_above="@+id/exit"
+        android:layout_width="200dp"
+        android:layout_height="50dp"
+        android:text="@string/clearcache"
+        android:textColor="#ffffff"
+        android:background="#66CD00"
+        android:alpha="0.6"
+        android:layout_marginBottom="10dp"
+        android:layout_centerHorizontal="true"/>
+    <Button
+        android:id="@+id/exit"
+        android:layout_width="200dp"
+        android:layout_height="50dp"
+        android:background="#66CD00"
+        android:textColor="#ffffff"
+        android:layout_marginBottom="40dp"
+        android:text="@string/exit"
+        android:alpha="0.6"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"/>
+</RelativeLayout>
