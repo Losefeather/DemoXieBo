@@ -1,39 +1,56 @@
 package com.tablaoutviewpagerdemo.a1111.demoxiebo.Power;
 
+import com.google.gson.annotations.SerializedName;
+
 /**
  * Created by a1111 on 17/10/9.
  */
 
 public class SubstationInfo {
     //变电站名称
+    @SerializedName("substationName")
     private String biandianzhanmingcheng;
     //线路名称
+    @SerializedName("lineName")
     private String xianlumingcheng;
     //监测对象类型
+    @SerializedName("monitorObject")
     private String jianceduixiangleixing;
     //检测对象名称
+    @SerializedName("detectObjectNam")
     private String jianceduixiangmingcheng;
     //电压等级
+    @SerializedName("voltageLevel")
     private String dianyadengji;
     //最小短路容量
+    @SerializedName("minShort")
     private String zuixiaoduanlurongliang;
     //供电设备容量
+    @SerializedName("powerSupply")
     private String gongdianshebeirongliang;
     //用户协议容量
+    @SerializedName("userProtocol")
     private String yonghuxieyirongliang;
     //基准容量
+    @SerializedName("benchmark")
     private String jizhunrongliang;
     //PT变比
+    @SerializedName("PTRatio")
     private String PTbianbi;
     //CT变比
+    @SerializedName("CTRatio")
     private String CTbianbi;
     //终端厂家
+    @SerializedName("terminalManufacturer")
     private String zhongduanchangjia;
     //终端型号
+    @SerializedName("terminalModel")
     private String zhongduanxinghao;
     //在运，停运
+    @SerializedName("operationStatus")
     private boolean powerSataus;
     //正常，异常
+    @SerializedName("normalStatus")
     private boolean PowerSatausInfo;
 
     public String getBiandianzhanmingcheng() {

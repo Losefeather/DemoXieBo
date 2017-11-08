@@ -13,7 +13,7 @@ public class MainActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        SysApplication.getInstance().addActivity(this);
+        //SysApplication.getInstance().addActivity(this);
         Intent intent = new Intent(MainActivity.this,LoginActivity.class);
         startActivity(intent);
 

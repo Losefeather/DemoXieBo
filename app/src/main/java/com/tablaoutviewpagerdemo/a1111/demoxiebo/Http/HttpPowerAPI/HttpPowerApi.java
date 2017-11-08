@@ -93,7 +93,7 @@ public class HttpPowerApi extends HttpManagerApi {
             doHttpDeal(httpService.getSteadyStatePowerList(secretKey,Ts));
         }
     }
-    public void getSteadyStatePowerList(boolean isFragment,String methodName,final String secretKey,final String stationName,int page,String type) {
+    public void getSteadyStateInfoList(boolean isFragment,String methodName,final String secretKey,final String stationName,int page,String type) {
         /*也可单独设置请求，会覆盖统一设置*/
         setCache(false);
         setMethod(methodName);

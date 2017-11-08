@@ -9,6 +9,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.TextView;
+
+import com.tablaoutviewpagerdemo.a1111.demoxiebo.Common.ActivityManager;
 import com.tablaoutviewpagerdemo.a1111.demoxiebo.Common.SysApplication;
 import com.tablaoutviewpagerdemo.a1111.demoxiebo.fragment.FragmentItem1;
 import com.tablaoutviewpagerdemo.a1111.demoxiebo.fragment.FragmentItem2;
@@ -31,7 +33,7 @@ public class FeagmentActivity extends RxFragmentActivity {
     private static Button bt_back;
     @Override
     protected void onCreate( Bundle savedInstanceState) {
-        SysApplication.getInstance().addActivity(this);
+        ActivityManager.getInstance().addActivity(this);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.fragment_menu);
         tv_title = this.findViewById(R.id.tv_menu_title);

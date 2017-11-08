@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
+import com.tablaoutviewpagerdemo.a1111.demoxiebo.Common.ActivityManager;
 import com.tablaoutviewpagerdemo.a1111.demoxiebo.Common.DataCleanManager;
 import com.tablaoutviewpagerdemo.a1111.demoxiebo.Common.SysApplication;
 import com.tablaoutviewpagerdemo.a1111.demoxiebo.FeagmentActivity;
@@ -40,7 +41,8 @@ public class FragmentUserInfo extends BaseRxFragment {
         exit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                SysApplication.getInstance().exit();
+                //SysApplication.getInstance().exit();
+                ActivityManager.getInstance().appExit(getContext());
             }
         });
         cache.setOnClickListener(new View.OnClickListener() {

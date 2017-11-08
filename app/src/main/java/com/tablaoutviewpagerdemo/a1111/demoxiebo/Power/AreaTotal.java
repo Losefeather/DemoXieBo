@@ -1,21 +1,28 @@
 package com.tablaoutviewpagerdemo.a1111.demoxiebo.Power;
 
 
+import com.google.gson.annotations.SerializedName;
 
 /**
  * Created by a1111 on 17/10/9.
  */
 
 public class AreaTotal {
+
     //名称
+    @SerializedName("areaName")
     private String name;
     //在线率1
+    @SerializedName("onlineRate1")
     private float Online1;
     //在线率2
+    @SerializedName("onlineRate2")
     private float Online2;
     //完整率
+    @SerializedName("completeRate")
     private float integrity;
     //数量
+    @SerializedName("areaNumber")
     private int num;
 
     public int getNum() {

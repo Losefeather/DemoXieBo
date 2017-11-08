@@ -1,14 +1,21 @@
 package com.tablaoutviewpagerdemo.a1111.demoxiebo.Power;
 
+import com.google.gson.annotations.SerializedName;
+
 /**
  * Created by a1111 on 17/9/29.
  */
 
 public class Power {
+    @SerializedName("areaName")
     private String Name;
+    @SerializedName("powerUp")
     private String Zanshengdianya;
+    @SerializedName("powerDown")
     private String Zanjiangdianya;
+    @SerializedName("powerPause")
     private String Duanshizhongduan;
+    @SerializedName("areaNumber")
     private int Num;
 
     public int getNum() {

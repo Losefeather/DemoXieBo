@@ -1,18 +1,28 @@
 package com.tablaoutviewpagerdemo.a1111.demoxiebo.Power;
 
+import com.google.gson.annotations.SerializedName;
+
 /**
  * Created by a1111 on 17/10/10.
  */
 
 public class SteadyStateAlarm {
 
+    @SerializedName("supplyUnit")
     private String gongdiandanwei;
+    @SerializedName("stationName")
     private String diaanzhanmingcheng;
+    @SerializedName("monitoringPoint")
     private String jiancedian;
+    @SerializedName("IndicatorType")
     private String zhibiaoleixing;
+    @SerializedName("occurrenceTime")
     private String fashengshijian;
+    @SerializedName("internationalValue")
     private Double guojizhi;
+    @SerializedName("actualValue")
     private Double shijizhi;
+    @SerializedName("outValue")
     private Double yuechuzhi;
 
     public String getGongdiandanwei() {

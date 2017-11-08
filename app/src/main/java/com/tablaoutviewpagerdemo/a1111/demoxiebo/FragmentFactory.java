@@ -68,7 +68,5 @@ public class FragmentFactory {
         fragmentTransaction.addToBackStack(null);
         fragmentTransaction.commitAllowingStateLoss();
         return fragment;
-
-
     }
 }

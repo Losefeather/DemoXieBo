@@ -4,44 +4,38 @@ import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.support.v4.app.Fragment;
-import superlibrary.adapter.AnimationType;
 import superlibrary.adapter.BaseViewHolder;
 import superlibrary.adapter.SuperBaseAdapter;
 import superlibrary.recycleview.ProgressStyle;
 import superlibrary.recycleview.SuperRecyclerView;
-
 import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.Interpolator;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.LinearLayout;
 import android.widget.Spinner;
-
+import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+import com.google.gson.reflect.TypeToken;
 import com.tablaoutviewpagerdemo.a1111.demoxiebo.FeagmentActivity;
 import com.tablaoutviewpagerdemo.a1111.demoxiebo.FragmentFactory;
+import com.tablaoutviewpagerdemo.a1111.demoxiebo.Http.HttpMessageEntity.BaseResultEntity;
+import com.tablaoutviewpagerdemo.a1111.demoxiebo.Power.AreaTotal;
+import com.tablaoutviewpagerdemo.a1111.demoxiebo.Power.CommonPowerList;
 import com.tablaoutviewpagerdemo.a1111.demoxiebo.Power.Power;
 import com.tablaoutviewpagerdemo.a1111.demoxiebo.R;
-import com.trello.rxlifecycle.components.support.RxFragment;
 import com.wzgiceman.rxretrofitlibrary.retrofit_rx.exception.ApiException;
-
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Random;
-
 import static com.tablaoutviewpagerdemo.a1111.demoxiebo.FeagmentActivity.setButton;
-import static java.security.AccessController.getContext;
-
-
 /**
  * Created by a1111 on 17/9/28.
  */
@@ -56,6 +50,7 @@ public class FragmentItem1 extends BaseRxFragment {
     private boolean isUp=true;
     private Spinner spinner;
     private ArrayAdapter<String> spinnerAdapter;
+    private int searchPage=0;
     @Override
     public View onCreateView(LayoutInflater inflater,  ViewGroup container,  Bundle savedInstanceState) {
         FeagmentActivity.Num=0;
@@ -127,8 +122,44 @@ public class FragmentItem1 extends BaseRxFragment {
         rcv.setLoadingMoreProgressStyle(ProgressStyle.BallClipRotate);//上拉加载的样式
         rcv.setArrowImageView(R.mipmap.ic_pulltorefresh_arrow);//设置下拉箭头
         rcv.setAdapter(srva);
-
+        dada();
         return view;
+    }
+    public void dada(){
+        JsonObject jsonObject = new JsonObject();
+        JsonObject jsonObject1 = new JsonObject();
+        JsonObject jsonObject2 = new JsonObject();
+
+        jsonObject.addProperty("Result","100");
+        jsonObject.addProperty("ResultMsg","100");
+
+        JsonArray jsonArray = new JsonArray();
+        jsonObject1.addProperty("areaName","天津");
+        jsonObject1.addProperty("areaNumber","12");
+        jsonObject1.addProperty("completeRate","99");
+        jsonObject1.addProperty("onlineRate1","99");
+        jsonObject1.addProperty("onlineRate2","89");
+        jsonObject2.addProperty("areaName","城东");
+        jsonObject2.addProperty("areaNumber","12");
+        jsonObject2.addProperty("completeRate","99");
+        jsonObject2.addProperty("onlineRate1","99");
+        jsonObject2.addProperty("onlineRate2","89");
+        jsonArray.add(jsonObject1);
+        jsonArray.add(jsonObject2);
+        jsonObject.add("ReturnValue",jsonArray);
+ //       Log.e(TAG,""+jsonObject.toString());
+        Gson gson = new Gson();
+        Type type = new TypeToken<BaseResultEntity<List<AreaTotal>>>(){}.getType();
+        BaseResultEntity<List<AreaTotal>> baseInfo=gson.fromJson(jsonObject,type);
+        for(int i=0;i<baseInfo.getData().size();i++){
+            Log.e(TAG,""+baseInfo.getData().get(i).getName());
+        }
+
+
+
+
+
+
     }
     public void initData(boolean isUp){
         powerList.clear();
@@ -196,6 +227,12 @@ public class FragmentItem1 extends BaseRxFragment {
 
     @Override
     public void onNext(String resulte, String method) {
+        if(method.equals(CommonPowerList.GET_LONGIN)){
+
+
+
+
+        }
         super.onNext(resulte, method);
     }
 

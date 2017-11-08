@@ -1,27 +1,38 @@
 package com.tablaoutviewpagerdemo.a1111.demoxiebo.Power;
 
+import com.google.gson.annotations.SerializedName;
+
 /**
  * Created by a1111 on 17/9/30.
  */
 
 public class PowerMonitorPoint {
     //供电单位
+    @SerializedName("supplyUnit")
     private String Gongdiandanwei;
     //电站名称
+    @SerializedName("stationName")
     private String Dianzhanmingcheng;
     //母线名称
+    @SerializedName("busName")
     private String Muxianmingcheng;
     //线路名称
+    @SerializedName("lineName")
     private String Xianlumingcheng;
     //事件类型
+    @SerializedName("eventType")
     private String Shijianleixing;
     //相别
+    @SerializedName("different")
     private String Xiangbie;
     //发生时间
+    @SerializedName("occurrenceTime")
     private String Fashengshijian;
     //残余电压
+    @SerializedName("residualVoltage")
     private String Canyudianya;
     //持续时间
+    @SerializedName("durationTime")
     private String Chixushijian;
 
     @Override
