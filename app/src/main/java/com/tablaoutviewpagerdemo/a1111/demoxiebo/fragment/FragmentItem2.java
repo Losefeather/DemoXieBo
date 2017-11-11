@@ -53,6 +53,7 @@ import static android.R.id.list;
 import static com.tablaoutviewpagerdemo.a1111.demoxiebo.FeagmentActivity.setButton;
 import static com.tablaoutviewpagerdemo.a1111.demoxiebo.Power.CommonPowerList.powerMonitorIdArrayList;
 import static com.tablaoutviewpagerdemo.a1111.demoxiebo.Power.CommonPowerList.substationInfoArrayList;
+import static com.tablaoutviewpagerdemo.a1111.demoxiebo.fragment.FragmentItem3Info.type;
 import static java.security.AccessController.getContext;
 import static junit.runner.Version.id;
 
@@ -79,7 +80,7 @@ public class FragmentItem2 extends BaseRxFragment{
     private String[] str ={"123"};
     private SuperRecyclerViewAdapter2 superRecyclerViewAdapter2;
     @Override
-    public View onCreateView(LayoutInflater inflater,  ViewGroup container,  Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater,  ViewGroup container, Bundle savedInstanceState) {
         FeagmentActivity.Num=0;
         setButton();
         if(CommonPowerList.substationInfoArrayList.size()>0){
@@ -123,10 +124,8 @@ public class FragmentItem2 extends BaseRxFragment{
             for(int i=0;i<CommonPowerList.powerMonitorIdArrayList.size();i++) {
                 stringArrayList.add(powerMonitorIdArrayList.get(i).getPowerMonitorName());
             }
-
              return stringArrayList.toArray(str);
         }else{
-            Log.e(TAG,"监测2");
            return stringArrayList.toArray(str);
         }
 
@@ -135,22 +134,43 @@ public class FragmentItem2 extends BaseRxFragment{
         imageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                page=1;
                 isRefresh=true;
-                httpPowerApi.getStationList(true,CommonPowerList.GET_STSATIONLIST,CommonPowerList.BUSI_JCDZL,CommonPowerList.sercetKey,stationId,stationName,page,count);
+                doWithStation(page);
             }
         });
     }
     private void onRefreshData(){
         page=1;
         isRefresh=true;
-        httpPowerApi.getStationList(true,CommonPowerList.GET_STSATIONLIST,CommonPowerList.BUSI_JCDZL,CommonPowerList.sercetKey,stationId,stationName,page,count);
+        doWithStation(page);
     }
     private void onLodMoreData(){
         page+=1;
         isRefresh=false;
-        httpPowerApi.getStationList(true,CommonPowerList.GET_STSATIONLIST,CommonPowerList.BUSI_JCDZL,CommonPowerList.sercetKey,stationId,stationName,page,count);
+        doWithStation(page);
     }
+    private void  doWithStation(int page){
+        String stationName="";
+        if(!search.getText().equals("")){
+            stationName=getStationName(search.getText().toString());
+        }
+        httpPowerApi.getStationList(true,CommonPowerList.GET_STSATIONLIST,CommonPowerList.BUSI_JCDZL,CommonPowerList.sercetKey,stationId,stationName,page,count);
 
+    }
+    private String getStationName(String name){
+        String id="";
+        if(powerMonitorIdArrayList.size()>0){
+            for(PowerMonitorId powerMonitorId:powerMonitorIdArrayList){
+                if(powerMonitorId.getPowerMonitorName().equals(name)){
+                    id= powerMonitorId.getGetPowerMonitorId();
+                }
+            }
+            return id;
+        }else{
+            return id;
+        }
+    }
     @Override
     public void onNext(String resulte, String method) {
         if (method.equals(CommonPowerList.GET_STSATIONLIST)) {
@@ -189,6 +209,9 @@ public class FragmentItem2 extends BaseRxFragment{
             if(isRefresh){
                 srv.completeRefresh();
             }else{
+                if(page>2){
+                    page--;
+                }
                 srv.completeLoadMore();
             }
         }

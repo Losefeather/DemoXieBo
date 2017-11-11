@@ -59,7 +59,6 @@ public class LoginActivity extends RxAppCompatActivity implements HttpOnNextList
     private String userNameValue,passwordValue;
     private String name,pass;
     private boolean choseRemember,choseAutoLogin;
-    private boolean isChanged;
     private HttpPowerApi httpPowerApi;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -170,15 +169,15 @@ public class LoginActivity extends RxAppCompatActivity implements HttpOnNextList
 
     @Override
     public void onError(ApiException e, String method) {
-        e(TAG,"error"+method);
+        e(TAG,"error"+method+" ApiException"+e.toString());
         if(method.equals(CommonPowerList.GET_LONGIN)){
-
+            Toast.makeText(this,this.getText(R.string.login_failed),Toast.LENGTH_SHORT).show();
         }
         if(method.equals(CommonPowerList.GET_STSTIONINFOLIST)){
-
+            httpPowerApi.getPowerList(false,CommonPowerList.GET_POWERLIST,CommonPowerList.BUSI_ZBGL,CommonPowerList.sercetKey,"2017-06-15"+" 00:00:00","2017-06-15"+" 23:59:59");
         }
         if(method.equals(CommonPowerList.GET_POWERLIST)){
-            Log.e(TAG,e.toString());
+            httpPowerApi.getSteadyStatePowerList(false,CommonPowerList.GET_STEADYSTATEPOWERLIST,CommonPowerList.BUSI_WTGJ,CommonPowerList.sercetKey,"2017-06-15"+" 00:00:00","2017-06-15"+" 23:59:59");
         }
         if(method.equals(CommonPowerList.GET_STEADYSTATEPOWERLIST)){
 

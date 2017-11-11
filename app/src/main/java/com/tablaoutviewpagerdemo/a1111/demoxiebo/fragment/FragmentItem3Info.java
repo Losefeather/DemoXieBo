@@ -26,6 +26,7 @@ import com.tablaoutviewpagerdemo.a1111.demoxiebo.Http.HttpPowerAPI.HttpPowerApi;
 import com.tablaoutviewpagerdemo.a1111.demoxiebo.Http.HttpPowerAPI.PowerResultEntity;
 import com.tablaoutviewpagerdemo.a1111.demoxiebo.Power.CommonPowerList;
 import com.tablaoutviewpagerdemo.a1111.demoxiebo.Power.Power;
+import com.tablaoutviewpagerdemo.a1111.demoxiebo.Power.PowerMonitorId;
 import com.tablaoutviewpagerdemo.a1111.demoxiebo.Power.SteadyStateAlarm;
 import com.tablaoutviewpagerdemo.a1111.demoxiebo.Power.SubstationInfo;
 import com.tablaoutviewpagerdemo.a1111.demoxiebo.R;
@@ -43,6 +44,7 @@ import superlibrary.recycleview.ProgressStyle;
 import superlibrary.recycleview.SuperRecyclerView;
 
 import static android.R.attr.id;
+import static android.R.attr.name;
 import static android.R.attr.onClick;
 import static com.tablaoutviewpagerdemo.a1111.demoxiebo.FeagmentActivity.setButton;
 import static com.tablaoutviewpagerdemo.a1111.demoxiebo.Power.CommonPowerList.powerMonitorIdArrayList;
@@ -61,27 +63,25 @@ public class FragmentItem3Info extends BaseRxFragment {
     private ArrayList<SteadyStateAlarm> list = new ArrayList<SteadyStateAlarm>();
     private AutoCompleteTextView search;
     private SearchAdapter searchAdapter;
-    private ArrayAdapter<String> spinnerAdapter;
     private ImageView imageView;
     public static String type;
     private int page =1;
     private int count=5;
     private HttpPowerApi httpPowerApi;
     private boolean isRefresh=false;
-    private String stationName="";
-    private String[] str = {"东丽","南开","武清", "城东", "城西","检修","欢喜庄"};
+    private String[] str = {""};
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         FeagmentActivity.Num=3;
         setButton();
-        httpPowerApi=new HttpPowerApi(this,this);
-        httpPowerApi.getSteadyStateInfoList(true, CommonPowerList.GET_STEADYSTATEINFOLIST,CommonPowerList.BUSI_WTGJXQ,CommonPowerList.sercetKey,stationName,page,count,type,"2017-06-15"+" 00:00:00","2017-06-15"+" 23:59:59");
         view=inflater.inflate(R.layout.fragment_item3_info,container,false);
         srv=view.findViewById(R.id.srv_item3);
         srva=new SuperRecyclerViewZAdapter(this.getContext(),list,this.getFragmentManager());
         search=view.findViewById(R.id.actv_itenm3_search);
         imageView=view.findViewById(R.id.iv_item3_search);
+        httpPowerApi=new HttpPowerApi(this,this);
+        doWithStation(page);
         searchAdapter=new SearchAdapter(getContext(), android.R.layout.simple_list_item_1,inloadngString(),SearchAdapter.ALL);
         search.setAdapter(searchAdapter);
         onClick();
@@ -95,7 +95,6 @@ public class FragmentItem3Info extends BaseRxFragment {
             public void onRefresh() {
                 onRefreshData();
             }
-
             @Override
             public void onLoadMore() {
                 onLodMoreData();
@@ -114,36 +113,52 @@ public class FragmentItem3Info extends BaseRxFragment {
             for(int i = 0; i< powerMonitorIdArrayList.size(); i++) {
                 stringArrayList.add(powerMonitorIdArrayList.get(i).getPowerMonitorName());
             }
-
             return stringArrayList.toArray(str);
         }else{
-            Log.e(TAG,"监测2");
             return stringArrayList.toArray(str);
         }
+    }
+    private void  doWithStation(int page){
+        String stationName="";
+        if(!search.getText().equals("")){
+            stationName=getStationName(search.getText().toString());
+        }
+        httpPowerApi.getSteadyStateInfoList(true, CommonPowerList.GET_STEADYSTATEINFOLIST,CommonPowerList.BUSI_WTGJXQ,CommonPowerList.sercetKey,stationName,page,count,type,"2017-06-15"+" 00:00:00","2017-06-15"+" 23:59:59");
 
     }
-
+    private String getStationName(String name){
+        String id="";
+        if(powerMonitorIdArrayList.size()>0){
+            for(PowerMonitorId powerMonitorId:powerMonitorIdArrayList){
+                if(powerMonitorId.getPowerMonitorName().equals(name)){
+                    id= powerMonitorId.getGetPowerMonitorId();
+                }
+            }
+            return id;
+        }else{
+            return id;
+        }
+    }
     private void onClick(){
         imageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 page=1;
                 isRefresh=true;
-                httpPowerApi.getSteadyStateInfoList(true, CommonPowerList.GET_STEADYSTATEINFOLIST,CommonPowerList.BUSI_WTGJXQ,CommonPowerList.sercetKey,stationName,page,count,type,"2017-06-15"+" 00:00:00","2017-06-15"+" 23:59:59");
+                doWithStation(page);
             }
         });
     }
     private void onRefreshData(){
         page=1;
         isRefresh=true;
-        httpPowerApi.getSteadyStateInfoList(true, CommonPowerList.GET_STEADYSTATEINFOLIST,CommonPowerList.BUSI_WTGJXQ,CommonPowerList.sercetKey,stationName,page,count,type,"2017-06-15"+" 00:00:00","2017-06-15"+" 23:59:59");
+        doWithStation(page);
     }
     private void onLodMoreData(){
         page+=1;
         isRefresh=false;
-        httpPowerApi.getSteadyStateInfoList(true, CommonPowerList.GET_STEADYSTATEINFOLIST,CommonPowerList.BUSI_WTGJXQ,CommonPowerList.sercetKey,stationName,page,count,type,"2017-06-15"+" 00:00:00","2017-06-15"+" 23:59:59");
+        doWithStation(page);
     }
-
     @Override
     public void onNext(String resulte, String method) {
         if (method.equals(CommonPowerList.GET_STEADYSTATEINFOLIST)) {
@@ -175,6 +190,8 @@ public class FragmentItem3Info extends BaseRxFragment {
 
     @Override
     public void onError(ApiException e, String method) {
+        Log.e(TAG,"method:"+method);
+        Log.e(TAG,"ApiException:"+e.toString());
         super.onError(e, method);
     }
 }
