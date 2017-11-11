@@ -8,50 +8,56 @@ import com.google.gson.annotations.SerializedName;
 
 public class SubstationInfo {
     //变电站名称
-    @SerializedName("substationName")
+    @SerializedName("SUBNAME")
     private String biandianzhanmingcheng;
     //线路名称
-    @SerializedName("lineName")
+    @SerializedName("LINE_NAME")
     private String xianlumingcheng;
     //监测对象类型
-    @SerializedName("monitorObject")
+    @SerializedName("FHLX")
     private String jianceduixiangleixing;
     //检测对象名称
-    @SerializedName("detectObjectNam")
+    @SerializedName("JCYHMC")
     private String jianceduixiangmingcheng;
     //电压等级
-    @SerializedName("voltageLevel")
+    @SerializedName("SCALE")
     private String dianyadengji;
     //最小短路容量
-    @SerializedName("minShort")
+    @SerializedName("DLCMP")
     private String zuixiaoduanlurongliang;
     //供电设备容量
-    @SerializedName("powerSupply")
+    @SerializedName("GDSBRL")
     private String gongdianshebeirongliang;
     //用户协议容量
-    @SerializedName("userProtocol")
+    @SerializedName("XYCMP")
     private String yonghuxieyirongliang;
     //基准容量
-    @SerializedName("benchmark")
+    @SerializedName("JZCMP")
     private String jizhunrongliang;
-    //PT变比
-    @SerializedName("PTRatio")
-    private String PTbianbi;
-    //CT变比
-    @SerializedName("CTRatio")
-    private String CTbianbi;
+    //PT变比1
+    @SerializedName("PT1")
+    private String PT1;
+    //PT变比2
+    @SerializedName("PT2")
+    private String PT2;
+    //CT变比1
+    @SerializedName("CT1")
+    private String CT1;
+    //CT变比2
+    @SerializedName("CT2")
+    private String CT2;
     //终端厂家
-    @SerializedName("terminalManufacturer")
+    @SerializedName("SCCJ")
     private String zhongduanchangjia;
     //终端型号
-    @SerializedName("terminalModel")
+    @SerializedName("ZZXH")
     private String zhongduanxinghao;
     //在运，停运
-    @SerializedName("operationStatus")
-    private boolean powerSataus;
+    @SerializedName("YXZT")
+    private String powerSataus;
     //正常，异常
     @SerializedName("normalStatus")
-    private boolean PowerSatausInfo;
+    private int PowerSatausInfo;
 
     public String getBiandianzhanmingcheng() {
         return biandianzhanmingcheng;
@@ -125,20 +131,40 @@ public class SubstationInfo {
         this.jizhunrongliang = jizhunrongliang;
     }
 
-    public String getPTbianbi() {
-        return PTbianbi;
+    public String getPT1() {
+        return PT1;
     }
 
-    public void setPTbianbi(String PTbianbi) {
-        this.PTbianbi = PTbianbi;
+    public void setPT1(String PT1) {
+        this.PT1 = PT1;
     }
 
-    public String getCTbianbi() {
-        return CTbianbi;
+    public String getPT2() {
+        return PT2;
     }
 
-    public void setCTbianbi(String CTbianbi) {
-        this.CTbianbi = CTbianbi;
+    public void setPT2(String PT2) {
+        this.PT2 = PT2;
+    }
+
+    public String getCT1() {
+        return CT1;
+    }
+
+    public void setCT1(String CT1) {
+        this.CT1 = CT1;
+    }
+
+    public String getCT2() {
+        return CT2;
+    }
+
+    public void setCT2(String CT2) {
+        this.CT2 = CT2;
+    }
+
+    public int getPowerSatausInfo() {
+        return PowerSatausInfo;
     }
 
     public String getZhongduanchangjia() {
@@ -157,19 +183,19 @@ public class SubstationInfo {
         this.zhongduanxinghao = zhongduanxinghao;
     }
 
-    public boolean isPowerSataus() {
+    public String getPowerSataus() {
         return powerSataus;
     }
 
-    public void setPowerSataus(boolean powerSataus) {
+    public void setPowerSataus(String powerSataus) {
         this.powerSataus = powerSataus;
     }
 
-    public boolean isPowerSatausInfo() {
+    public int isPowerSatausInfo() {
         return PowerSatausInfo;
     }
 
-    public void setPowerSatausInfo(boolean powerSatausInfo) {
+    public void setPowerSatausInfo(int powerSatausInfo) {
         PowerSatausInfo = powerSatausInfo;
     }
 }

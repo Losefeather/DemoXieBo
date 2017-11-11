@@ -8,18 +8,32 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.LinearLayoutManager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
+import android.widget.ImageView;
 import android.widget.SearchView;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+import com.tablaoutviewpagerdemo.a1111.demoxiebo.Common.FuzzyQuery.SearchAdapter;
 import com.tablaoutviewpagerdemo.a1111.demoxiebo.FeagmentActivity;
 import com.tablaoutviewpagerdemo.a1111.demoxiebo.FragmentFactory;
+import com.tablaoutviewpagerdemo.a1111.demoxiebo.Http.HttpPowerAPI.HttpPowerApi;
+import com.tablaoutviewpagerdemo.a1111.demoxiebo.Http.HttpPowerAPI.PowerResultEntity;
+import com.tablaoutviewpagerdemo.a1111.demoxiebo.Power.CommonPowerList;
 import com.tablaoutviewpagerdemo.a1111.demoxiebo.Power.Power;
 import com.tablaoutviewpagerdemo.a1111.demoxiebo.Power.SteadyStateAlarm;
+import com.tablaoutviewpagerdemo.a1111.demoxiebo.Power.SubstationInfo;
 import com.tablaoutviewpagerdemo.a1111.demoxiebo.R;
 import com.trello.rxlifecycle.components.support.RxFragment;
+import com.wzgiceman.rxretrofitlibrary.retrofit_rx.exception.ApiException;
+import com.wzgiceman.rxretrofitlibrary.retrofit_rx.listener.HttpOnNextListener;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,8 +43,11 @@ import superlibrary.recycleview.ProgressStyle;
 import superlibrary.recycleview.SuperRecyclerView;
 
 import static android.R.attr.id;
+import static android.R.attr.onClick;
 import static com.tablaoutviewpagerdemo.a1111.demoxiebo.FeagmentActivity.setButton;
+import static com.tablaoutviewpagerdemo.a1111.demoxiebo.Power.CommonPowerList.powerMonitorIdArrayList;
 import static com.tablaoutviewpagerdemo.a1111.demoxiebo.R.id.rcv;
+import static com.tablaoutviewpagerdemo.a1111.demoxiebo.R.string.ct;
 
 /**
  * Created by a1111 on 17/10/10.
@@ -39,20 +56,35 @@ import static com.tablaoutviewpagerdemo.a1111.demoxiebo.R.id.rcv;
 public class FragmentItem3Info extends BaseRxFragment {
     public static String TAG = "FragmentItem3Info";
     private View view;
-    private SearchView sv;
     private SuperRecyclerView srv;
     private SuperRecyclerViewZAdapter srva;
-    private List<SteadyStateAlarm> list = new ArrayList<SteadyStateAlarm>();
+    private ArrayList<SteadyStateAlarm> list = new ArrayList<SteadyStateAlarm>();
+    private AutoCompleteTextView search;
+    private SearchAdapter searchAdapter;
+    private ArrayAdapter<String> spinnerAdapter;
+    private ImageView imageView;
+    public static String type;
+    private int page =1;
+    private int count=5;
+    private HttpPowerApi httpPowerApi;
+    private boolean isRefresh=false;
+    private String stationName="";
+    private String[] str = {"东丽","南开","武清", "城东", "城西","检修","欢喜庄"};
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         FeagmentActivity.Num=3;
         setButton();
+        httpPowerApi=new HttpPowerApi(this,this);
+        httpPowerApi.getSteadyStateInfoList(true, CommonPowerList.GET_STEADYSTATEINFOLIST,CommonPowerList.BUSI_WTGJXQ,CommonPowerList.sercetKey,stationName,page,count,type,"2017-06-15"+" 00:00:00","2017-06-15"+" 23:59:59");
         view=inflater.inflate(R.layout.fragment_item3_info,container,false);
-        sv=view.findViewById(R.id.sv_item3);
         srv=view.findViewById(R.id.srv_item3);
         srva=new SuperRecyclerViewZAdapter(this.getContext(),list,this.getFragmentManager());
-        initData();
+        search=view.findViewById(R.id.actv_itenm3_search);
+        imageView=view.findViewById(R.id.iv_item3_search);
+        searchAdapter=new SearchAdapter(getContext(), android.R.layout.simple_list_item_1,inloadngString(),SearchAdapter.ALL);
+        search.setAdapter(searchAdapter);
+        onClick();
         LinearLayoutManager layoutManager = new LinearLayoutManager(this.getContext());
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         srv.setLayoutManager(layoutManager);
@@ -61,26 +93,12 @@ public class FragmentItem3Info extends BaseRxFragment {
         srv.setLoadingListener(new SuperRecyclerView.LoadingListener() {
             @Override
             public void onRefresh() {
-                Handler handler = new Handler(){
-                    @Override
-                    public void handleMessage(Message msg) {
-                        reFreash();
-                        super.handleMessage(msg);
-                    }
-                };
-                handler.sendEmptyMessage(123);
+                onRefreshData();
             }
 
             @Override
             public void onLoadMore() {
-                Handler  handler = new Handler(){
-                    @Override
-                    public void handleMessage(Message msg) {
-                        reLoadMore();
-                        super.handleMessage(msg);
-                    }
-                };
-                handler.sendEmptyMessage(123);
+                onLodMoreData();
             }
         });//下拉刷新，上拉加载的监听
         srv.setRefreshProgressStyle(ProgressStyle.BallSpinFadeLoader);//下拉刷新的样式
@@ -90,53 +108,74 @@ public class FragmentItem3Info extends BaseRxFragment {
 
         return view;
     }
-    public void initData(){
-        list.clear();
-        for(int i=0;i<5;i++){
-            SteadyStateAlarm ssa = new SteadyStateAlarm();
-            ssa.setDiaanzhanmingcheng("东丽湖110kV变电站");
-            ssa.setFashengshijian("2017-11-10 23:23:59");
-            ssa.setGongdiandanwei(getString(R.string.dongli));
-            ssa.setGuojizhi(1.0);
-            ssa.setJiancedian("202受总");
-            ssa.setShijizhi(1.74);
-            ssa.setYuechuzhi(0.74);
-            ssa.setZhibiaoleixing("闪变越限");
-            list.add(ssa);
+    private String[] inloadngString(){
+        List<String> stringArrayList = new ArrayList<String>();
+        if (powerMonitorIdArrayList.size() > 0) {
+            for(int i = 0; i< powerMonitorIdArrayList.size(); i++) {
+                stringArrayList.add(powerMonitorIdArrayList.get(i).getPowerMonitorName());
+            }
+
+            return stringArrayList.toArray(str);
+        }else{
+            Log.e(TAG,"监测2");
+            return stringArrayList.toArray(str);
         }
+
     }
-    public void reFreash(){
-        list.clear();
-        for(int i=0;i<5;i++){
-            SteadyStateAlarm ssa = new SteadyStateAlarm();
-            ssa.setDiaanzhanmingcheng("东丽湖110kV变电站");
-            ssa.setFashengshijian("2017-11-10 23:23:59");
-            ssa.setGongdiandanwei(getString(R.string.dongli));
-            ssa.setGuojizhi(1.0);
-            ssa.setJiancedian("202受总");
-            ssa.setShijizhi(1.74);
-            ssa.setYuechuzhi(0.74);
-            ssa.setZhibiaoleixing("闪变越限");
-            list.add(ssa);
-        }
-        srva.notifyDataSetChanged();
-        srv.completeRefresh();
+
+    private void onClick(){
+        imageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                page=1;
+                isRefresh=true;
+                httpPowerApi.getSteadyStateInfoList(true, CommonPowerList.GET_STEADYSTATEINFOLIST,CommonPowerList.BUSI_WTGJXQ,CommonPowerList.sercetKey,stationName,page,count,type,"2017-06-15"+" 00:00:00","2017-06-15"+" 23:59:59");
+            }
+        });
     }
-    public void reLoadMore(){
-        for(int i=0;i<5;i++){
-            SteadyStateAlarm ssa = new SteadyStateAlarm();
-            ssa.setDiaanzhanmingcheng("东丽湖110kV变电站");
-            ssa.setFashengshijian("2017-11-10 23:23:59");
-            ssa.setGongdiandanwei(getString(R.string.dongli));
-            ssa.setGuojizhi(1.0);
-            ssa.setJiancedian("202受总");
-            ssa.setShijizhi(1.74);
-            ssa.setYuechuzhi(0.74);
-            ssa.setZhibiaoleixing("闪变越限");
-            list.add(ssa);
+    private void onRefreshData(){
+        page=1;
+        isRefresh=true;
+        httpPowerApi.getSteadyStateInfoList(true, CommonPowerList.GET_STEADYSTATEINFOLIST,CommonPowerList.BUSI_WTGJXQ,CommonPowerList.sercetKey,stationName,page,count,type,"2017-06-15"+" 00:00:00","2017-06-15"+" 23:59:59");
+    }
+    private void onLodMoreData(){
+        page+=1;
+        isRefresh=false;
+        httpPowerApi.getSteadyStateInfoList(true, CommonPowerList.GET_STEADYSTATEINFOLIST,CommonPowerList.BUSI_WTGJXQ,CommonPowerList.sercetKey,stationName,page,count,type,"2017-06-15"+" 00:00:00","2017-06-15"+" 23:59:59");
+    }
+
+    @Override
+    public void onNext(String resulte, String method) {
+        if (method.equals(CommonPowerList.GET_STEADYSTATEINFOLIST)) {
+            if(isRefresh){
+                Log.e(TAG,"onNextup");
+                list.clear();
+                Gson gson = new Gson();
+                Type type = new TypeToken<PowerResultEntity<List<SteadyStateAlarm>>>(){}.getType();
+                PowerResultEntity<List<SteadyStateAlarm>> baseInfo=gson.fromJson(resulte,type);
+                for(int i=0;i<baseInfo.getData().size();i++) {
+                    list.add(baseInfo.getData().get(i));
+                }
+                srva.notifyDataSetChanged();
+                srv.completeRefresh();
+            }else{
+                Log.e(TAG,"onNextdown");
+                Gson gson = new Gson();
+                Type type = new TypeToken<PowerResultEntity<List<SteadyStateAlarm>>>(){}.getType();
+                PowerResultEntity<List<SteadyStateAlarm>> baseInfo=gson.fromJson(resulte,type);
+                for(int i=0;i<baseInfo.getData().size();i++) {
+                    list.add(baseInfo.getData().get(i));
+                }
+                srva.notifyDataSetChanged();
+                srv.completeLoadMore();
+            }
         }
-        srva.notifyDataSetChanged();
-        srv.completeLoadMore();
+        super.onNext(resulte, method);
+    }
+
+    @Override
+    public void onError(ApiException e, String method) {
+        super.onError(e, method);
     }
 }
 class SuperRecyclerViewZAdapter extends SuperBaseAdapter<SteadyStateAlarm>{

@@ -3,8 +3,8 @@ package com.tablaoutviewpagerdemo.a1111.demoxiebo.fragment;
 import android.content.Context;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
+
+
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -17,11 +17,20 @@ import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.tablaoutviewpagerdemo.a1111.demoxiebo.FeagmentActivity;
 import com.tablaoutviewpagerdemo.a1111.demoxiebo.FragmentFactory;
+import com.tablaoutviewpagerdemo.a1111.demoxiebo.Http.HttpPowerAPI.HttpPowerApi;
+import com.tablaoutviewpagerdemo.a1111.demoxiebo.Http.HttpPowerAPI.PowerResultEntity;
+import com.tablaoutviewpagerdemo.a1111.demoxiebo.Power.CommonPowerList;
+import com.tablaoutviewpagerdemo.a1111.demoxiebo.Power.SteadyStatePower;
 import com.tablaoutviewpagerdemo.a1111.demoxiebo.R;
 import com.trello.rxlifecycle.components.support.RxFragment;
+import com.wzgiceman.rxretrofitlibrary.retrofit_rx.exception.ApiException;
+import com.wzgiceman.rxretrofitlibrary.retrofit_rx.listener.HttpOnNextListener;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -37,12 +46,13 @@ import superlibrary.recycleview.SuperRecyclerView;
 
 
 import static com.tablaoutviewpagerdemo.a1111.demoxiebo.FeagmentActivity.setButton;
+import static com.tablaoutviewpagerdemo.a1111.demoxiebo.Power.CommonPowerList.steadyStatePowerArrayList;
 
 /**
  * Created by a1111 on 17/9/30.
  */
 
-public class FragmentItem3 extends BaseRxFragment {
+public class FragmentItem3 extends BaseRxFragment implements HttpOnNextListener {
     public static String TAG = "FragmentItem3";
     @Bind(R.id.sp_item3)
     Spinner spItem3;
@@ -51,9 +61,11 @@ public class FragmentItem3 extends BaseRxFragment {
     private View view;
     private SuperRecyclerViewCAdapter srva;
     private List<Item> powerList = new ArrayList<Item>();
+    private ArrayList<SteadyStatePower> steadyStatePowerList = new ArrayList<SteadyStatePower>();
     private String[] ss;
     private boolean isUp = true;
     private ArrayAdapter<String> spinnerAdapter;
+    private HttpPowerApi httpPowerApi;
 
     @Nullable
     @Override
@@ -66,7 +78,12 @@ public class FragmentItem3 extends BaseRxFragment {
         view = inflater.inflate(R.layout.fragment_item3, container, false);
         rcvItem3 = view.findViewById(R.id.rcv_item3);
         spItem3 = view.findViewById(R.id.sp_item3);
-        initData(isUp);
+        httpPowerApi = new HttpPowerApi(this, this);
+        if (steadyStatePowerArrayList.size() > 0) {
+            steadyStatePowerList = steadyStatePowerArrayList;
+            powerList = doWithList(steadyStatePowerList);
+        }
+        initData(isUp,powerList);
         String[] list = getContext().getResources().getStringArray(R.array.spingarr);
         //适配器
         spinnerAdapter = new ArrayAdapter<String>(this.getContext(), android.R.layout.simple_spinner_item, list);
@@ -80,12 +97,12 @@ public class FragmentItem3 extends BaseRxFragment {
                 if (i == 0) {
                     if (!isUp) {
                         isUp = true;
-                        reFreash(isUp);
+                        reFreash(isUp, powerList);
                     }
                 } else {
                     if (isUp) {
                         isUp = false;
-                        reFreash(isUp);
+                        reFreash(isUp, powerList);
                     }
                 }
             }
@@ -104,25 +121,12 @@ public class FragmentItem3 extends BaseRxFragment {
         rcvItem3.setLoadingListener(new SuperRecyclerView.LoadingListener() {
             @Override
             public void onRefresh() {
-                Handler handler = new Handler() {
-                    @Override
-                    public void handleMessage(Message msg) {
-                        reFreash(isUp);
-                        super.handleMessage(msg);
-                    }
-                };
-                handler.sendEmptyMessage(123);
+                httpPowerApi.getSteadyStatePowerList(false, CommonPowerList.GET_STEADYSTATEPOWERLIST, CommonPowerList.BUSI_WTGJ, CommonPowerList.sercetKey, "2017-06-15" + " 00:00:00", "2017-06-15" + " 23:59:59");
             }
 
             @Override
             public void onLoadMore() {
-                Handler handler = new Handler() {
-                    @Override
-                    public void handleMessage(Message msg) {
-                        rcvItem3.completeLoadMore();
-                        super.handleMessage(msg);
-                    }
-                };
+
             }
         });//下拉刷新，上拉加载的监听
         rcvItem3.setRefreshProgressStyle(ProgressStyle.BallSpinFadeLoader);//下拉刷新的样式
@@ -132,15 +136,56 @@ public class FragmentItem3 extends BaseRxFragment {
         return view;
     }
 
-    public void initData(boolean isUp) {
-        powerList.clear();
-        Random random = new Random(100);
-        for (int i = 0; i < ss.length; i++) {
-            Item item = new Item();
-            item.setItem1(ss[i]);
-            item.setItem2(random.nextInt(100));
-            powerList.add(item);
+    public List<Item> doWithList(List<SteadyStatePower> list) {
+        for (SteadyStatePower steadyStatePower : list) {
+            if (steadyStatePower.getDianyabupinghengdu() != null) {
+                Item item = new Item();
+                item.setItem1(ss[2]);
+                item.setItem2(Float.valueOf(steadyStatePower.getDianyabupinghengdu().replace("%", "")));
+                powerList.add(item);
+            }
+            if (steadyStatePower.getDianyapiancha() != null) {
+                Item item = new Item();
+                item.setItem1(ss[1]);
+                item.setItem2(Float.valueOf(steadyStatePower.getDianyapiancha().replace("%", "")));
+                powerList.add(item);
+            }
+            if (steadyStatePower.getDianyaxiebojibianlv() != null) {
+                Item item = new Item();
+                item.setItem1(ss[4]);
+                item.setItem2(Float.valueOf(steadyStatePower.getDianyaxiebojibianlv().replace("%", "")));
+                powerList.add(item);
+            }
+            if (steadyStatePower.getPinlvpiancha() != null) {
+                Item item = new Item();
+                item.setItem1(ss[0]);
+                item.setItem2(Float.valueOf(steadyStatePower.getPinlvpiancha().replace("%", "")));
+                powerList.add(item);
+            }
+            if (steadyStatePower.getShanbian() != null) {
+                Item item = new Item();
+                item.setItem1(ss[3]);
+                item.setItem2(Float.valueOf(steadyStatePower.getShanbian().replace("%", "")));
+                powerList.add(item);
+            }
+            if (steadyStatePower.getXiebodianluifuzhi() != null) {
+                Item item = new Item();
+                item.setItem1(ss[6]);
+                item.setItem2(Float.valueOf(steadyStatePower.getXiebodianluifuzhi().replace("%", "")));
+                powerList.add(item);
+            }
+            if (steadyStatePower.getXiebodianyahanyoulv() != null) {
+                Item item = new Item();
+                item.setItem1(ss[5]);
+                item.setItem2(Float.valueOf(steadyStatePower.getXiebodianyahanyoulv().replace("%", "")));
+                powerList.add(item);
+            }
         }
+        return powerList;
+    }
+
+
+    public void initData(boolean isUp,List<Item> powerList) {
         CollectionsList(powerList, isUp);
     }
 
@@ -181,27 +226,40 @@ public class FragmentItem3 extends BaseRxFragment {
     @Override
     public void onDestroyView() {
         ButterKnife.unbind(this.getActivity());
+        CommonPowerList.steadyStatePowerArrayList=steadyStatePowerList;
         super.onDestroyView();
     }
 
-    private void reFreash(boolean isUp) {
-        powerList.clear();
-        Random random = new Random(99);
-        for (int i = 0; i < ss.length; i++) {
-            Item item = new Item();
-            item.setItem1(ss[i]);
-            item.setItem2(random.nextInt(100));
-            powerList.add(item);
-        }
+    private void reFreash(boolean isUp,List<Item> powerList) {
+
         CollectionsList(powerList, isUp);
         srva.notifyDataSetChanged();
         rcvItem3.completeRefresh();
+    }
+
+    @Override
+    public void onNext(String resulte, String method) {
+        steadyStatePowerArrayList.clear();
+        Gson gson = new Gson();
+        Type type = new TypeToken<PowerResultEntity<List<SteadyStatePower>>>(){}.getType();
+        PowerResultEntity<List<SteadyStatePower>> baseInfo=gson.fromJson(resulte,type);
+        for(int i=0;i<baseInfo.getData().size();i++) {
+            steadyStatePowerArrayList.add(baseInfo.getData().get(i));
+        }
+        powerList=doWithList(steadyStatePowerArrayList);
+        reFreash(isUp,powerList);
+        super.onNext(resulte, method);
+    }
+
+    @Override
+    public void onError(ApiException e, String method) {
+        super.onError(e, method);
     }
 }
 
 class Item {
     private String item1;
-    private int item2;
+    private float item2;
 
     public String getItem1() {
         return item1;
@@ -211,11 +269,11 @@ class Item {
         this.item1 = item1;
     }
 
-    public int getItem2() {
+    public float getItem2() {
         return item2;
     }
 
-    public void setItem2(int item2) {
+    public void setItem2(float item2) {
         this.item2 = item2;
     }
 }
@@ -238,9 +296,9 @@ class SuperRecyclerViewCAdapter extends SuperBaseAdapter<Item> {
     }
 
     @Override
-    protected void convert(final BaseViewHolder holder, Item item, int position) {
+    protected void convert(final BaseViewHolder holder, final Item item, int position) {
         holder.setText(R.id.tv_recycler_item3_name, item.getItem1());
-        holder.setText(R.id.tv_recycler_item3_rate, item.getItem2() + "%");
+        holder.setText(R.id.tv_recycler_item3_rate, item.getItem2()+"%");
         if (item.getItem2() < 100 && item.getItem2() >= 95) {
             holder.setBackgroundColor(R.id.tv_recycler_item3_rate, Color.parseColor("#66CD00"));
         } else if (item.getItem2() < 95 && item.getItem2() >= 90) {
@@ -254,6 +312,28 @@ class SuperRecyclerViewCAdapter extends SuperBaseAdapter<Item> {
         holder.getView(R.id.rl_recyc_item3).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
+                if(item.getItem1().equalsIgnoreCase("闪变")){
+                    FragmentItem3Info.type="FLICKER";
+                }
+                if(item.getItem1().equalsIgnoreCase("电压不平衡度")){
+                    FragmentItem3Info.type="UBALANCE";
+                }
+                if(item.getItem1().equalsIgnoreCase("电压偏差")){
+                    FragmentItem3Info.type="VOLTAGE_DEV";
+                }
+                if(item.getItem1().equalsIgnoreCase("电压谐波畸变率")){
+                    FragmentItem3Info.type="UABERRANCE";
+                }
+                if(item.getItem1().equalsIgnoreCase("电压谐波含有率")){
+                    FragmentItem3Info.type="UHARM";
+                }
+                if(item.getItem1().equalsIgnoreCase("电流谐波幅值")){
+                    FragmentItem3Info.type="IHARM";
+                }
+                if(item.getItem1().equalsIgnoreCase("频率偏差")){
+                    FragmentItem3Info.type="FREQ_DEV";
+                }
                 FragmentFactory.getFragmentInstance(fragmentManager, FragmentItem3Info.TAG);
             }
         });

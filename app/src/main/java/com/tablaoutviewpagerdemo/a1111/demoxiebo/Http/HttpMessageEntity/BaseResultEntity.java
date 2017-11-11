@@ -10,10 +10,10 @@ import java.util.ArrayList;
  */
 public class BaseResultEntity<T> {
     //  判断标示
-    @SerializedName( "Result")
+    @SerializedName("Result")
     private int ret;
     //    提示信息
-    @SerializedName( "ResultMsg")
+    @SerializedName("ResultMsg")
     private String msg;
     //显示数据（用户需要关心的数据）
     @SerializedName("ReturnValue")

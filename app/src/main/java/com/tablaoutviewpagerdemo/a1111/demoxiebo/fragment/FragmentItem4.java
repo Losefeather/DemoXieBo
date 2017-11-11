@@ -12,13 +12,21 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.tablaoutviewpagerdemo.a1111.demoxiebo.FeagmentActivity;
 import com.tablaoutviewpagerdemo.a1111.demoxiebo.FragmentFactory;
+import com.tablaoutviewpagerdemo.a1111.demoxiebo.Http.HttpPowerAPI.HttpPowerApi;
+import com.tablaoutviewpagerdemo.a1111.demoxiebo.Http.HttpPowerAPI.PowerResultEntity;
 import com.tablaoutviewpagerdemo.a1111.demoxiebo.Power.AreaTotal;
+import com.tablaoutviewpagerdemo.a1111.demoxiebo.Power.CommonPowerList;
 import com.tablaoutviewpagerdemo.a1111.demoxiebo.Power.Power;
 import com.tablaoutviewpagerdemo.a1111.demoxiebo.R;
 import com.trello.rxlifecycle.components.support.RxFragment;
+import com.wzgiceman.rxretrofitlibrary.retrofit_rx.exception.ApiException;
+import com.wzgiceman.rxretrofitlibrary.retrofit_rx.listener.HttpOnNextListener;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -30,6 +38,7 @@ import superlibrary.recycleview.SuperRecyclerView;
 import java.text.DecimalFormat;
 
 import static com.tablaoutviewpagerdemo.a1111.demoxiebo.FeagmentActivity.setButton;
+import static com.tablaoutviewpagerdemo.a1111.demoxiebo.Power.CommonPowerList.areaTotalArrayList;
 
 /**
  * Created by a1111 on 17/9/30.
@@ -39,17 +48,22 @@ public class FragmentItem4 extends BaseRxFragment {
     public static String TAG="FragmentItem4";
     private View view;
     private SuperRecyclerView rcv;
-    private List<AreaTotal> list= new ArrayList<AreaTotal>();
+    private ArrayList<AreaTotal> list= new ArrayList<AreaTotal>();
     private SuperRecyclerViewAdapter srva;
+    private HttpPowerApi httpPowerApi;
     @Override
     public View onCreateView(LayoutInflater inflater,  ViewGroup container,  Bundle savedInstanceState) {
         FeagmentActivity.Num=0;
         setButton();
+         httpPowerApi = new HttpPowerApi(this,this);
+        if(CommonPowerList.areaTotalArrayList.size()>0){
+            list= areaTotalArrayList;
+        }
         view =inflater.inflate(R.layout.fragment_item4,container,false);
         rcv = view.findViewById(R.id.srv_item4);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this.getContext());
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
-        initData();
+
         srva=new SuperRecyclerViewAdapter(this.getContext(),list,this.getFragmentManager());
         rcv.setLayoutManager(layoutManager);
         rcv.setAdapter(srva);
@@ -58,25 +72,12 @@ public class FragmentItem4 extends BaseRxFragment {
         rcv.setLoadingListener(new SuperRecyclerView.LoadingListener() {
             @Override
             public void onRefresh() {
-                Handler handler = new Handler(){
-                    @Override
-                    public void handleMessage(Message msg) {
-                        reFreshData();
-                        super.handleMessage(msg);
-                    }
-                };
-                handler.sendEmptyMessage(123);
+                httpPowerApi.getPowerList(true,CommonPowerList.GET_POWERLIST,CommonPowerList.BUSI_ZBGL,CommonPowerList.sercetKey,"2017-06-15"+" 00:00:00","2017-06-15"+" 23:59:59");
             }
 
             @Override
             public void onLoadMore() {
-                Handler  handler = new Handler(){
-                    @Override
-                    public void handleMessage(Message msg) {
-                        rcv.completeLoadMore();
-                        super.handleMessage(msg);
-                    }
-                };
+
             }
         });//下拉刷新，上拉加载的监听
         rcv.setRefreshProgressStyle(ProgressStyle.BallSpinFadeLoader);//下拉刷新的样式
@@ -86,42 +87,42 @@ public class FragmentItem4 extends BaseRxFragment {
 
         return view;
     }
-    private void initData(){
-        list.clear();
-        String[] ss= new String[]{getString(R.string.tianjin),getString(R.string.wuqing),getString(R.string.baodi),getString(R.string.binhai),getString(R.string.chengdong),
-        getString(R.string.chengxi),getString(R.string.jianxiu)};
-        Random random = new Random(100);
 
-        for(int i=0;i<ss.length;i++){
-            AreaTotal areaTotal = new AreaTotal();
-            areaTotal.setName(ss[i]);
-            areaTotal.setNum(random.nextInt(100));
-            areaTotal.setOnline1(random.nextFloat()*100);
-            areaTotal.setOnline2(random.nextFloat()*100);
-            areaTotal.setIntegrity(random.nextFloat()*100);
-            list.add(areaTotal);
-        }
-    }
     private void reFreshData(){
-        list.clear();
-        String[] ss= new String[]{getString(R.string.tianjin),getString(R.string.wuqing),getString(R.string.baodi),getString(R.string.binhai),getString(R.string.chengdong),
-                getString(R.string.chengxi),getString(R.string.jianxiu)};
 
 
-        Random random = new Random(new Random().nextInt(100));
-        for(int i=0;i<ss.length;i++){
-            AreaTotal areaTotal = new AreaTotal();
-            areaTotal.setName(ss[i]);
-            areaTotal.setNum(random.nextInt(100));
-            areaTotal.setOnline1(random.nextFloat()*100);
-            areaTotal.setOnline2(random.nextFloat()*100);
-            areaTotal.setIntegrity(random.nextFloat()*100);
-            list.add(areaTotal);
-        }
         srva.notifyDataSetChanged();
-        rcv.invalidate();
+
         rcv.completeRefresh();
     }
+
+    @Override
+    public void onNext(String resulte, String method) {
+        if(method.equals(CommonPowerList.GET_POWERLIST)){
+            list.clear();
+            Gson gson = new Gson();
+            Type type = new TypeToken<PowerResultEntity<List<AreaTotal>>>(){}.getType();
+            PowerResultEntity<List<AreaTotal>> baseInfo=gson.fromJson(resulte,type);
+            for(int i=0;i<baseInfo.getData().size();i++) {
+                list.add(baseInfo.getData().get(i));
+            }
+            srva.notifyDataSetChanged();
+            rcv.completeRefresh();
+        }
+        super.onNext(resulte, method);
+    }
+
+    @Override
+    public void onDestroyView() {
+        CommonPowerList.areaTotalArrayList=list;
+        super.onDestroyView();
+    }
+
+    @Override
+    public void onError(ApiException e, String method) {
+        super.onError(e, method);
+    }
+
     class SuperRecyclerViewAdapter extends SuperBaseAdapter<AreaTotal>{
         public boolean isClick=false;
 
@@ -147,9 +148,9 @@ public class FragmentItem4 extends BaseRxFragment {
             DecimalFormat   fnum  =   new  DecimalFormat("##0.00");
             holder.setText(R.id.tv_recycler_item4_name,item.getName());
             holder.setText(R.id.tv_recycler_item4_num,""+item.getNum());
-            holder.setText(R.id.tv_recycler_item4_1,context.getString(R.string.wanzhenglv)+":"+fnum.format(item.getIntegrity())+"%");
-            holder.setText(R.id.tv_recycler_item4_2,context.getString(R.string.zaixianlv_one)+":"+fnum.format(item.getOnline1())+"%");
-            holder.setText(R.id.tv_recycler_item4_3,context.getString(R.string.zaixianlv_two)+":"+fnum.format(item.getOnline2())+"%");
+            holder.setText(R.id.tv_recycler_item4_1,context.getString(R.string.wanzhenglv)+":"+item.getIntegrity());
+            holder.setText(R.id.tv_recycler_item4_2,context.getString(R.string.zaixianlv_one)+":"+item.getOnline1());
+            holder.setText(R.id.tv_recycler_item4_3,context.getString(R.string.zaixianlv_two)+":"+item.getOnline2());
             holder.setTag(R.id.tv_recycler_item4_name,"false");
             holder.getView(R.id.bt_recycler_item4_name).setOnClickListener(new View.OnClickListener() {
                 @Override

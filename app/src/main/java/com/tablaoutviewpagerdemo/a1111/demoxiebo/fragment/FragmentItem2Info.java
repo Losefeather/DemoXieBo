@@ -53,8 +53,8 @@ public class FragmentItem2Info extends BaseRxFragment {
         tv7.setText(getText(R.string.gongdianshebeirongliang)+":"+si.getGongdianshebeirongliang());
         tv8.setText(getText(R.string.yonghuxieyirongliang)+":"+si.getYonghuxieyirongliang());
         tv9.setText(getText(R.string.jizhunrongliang)+":"+si.getJizhunrongliang());
-        tv10.setText(getText(R.string.pt)+":"+si.getPTbianbi());
-        tv11.setText(getText(R.string.ct)+":"+si.getCTbianbi());
+        tv10.setText(getText(R.string.pt)+":"+si.getPT1()+"/"+si.getPT2());
+        tv11.setText(getText(R.string.ct)+":"+si.getCT1()+"/"+si.getCT2());
         tv12.setText(getText(R.string.zhongduanchangjia)+":"+si.getZhongduanchangjia());
         tv13.setText(getText(R.string.zhongduanxinghao)+":"+si.getZhongduanxinghao());
 

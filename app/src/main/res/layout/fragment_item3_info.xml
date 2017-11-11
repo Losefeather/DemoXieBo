@@ -9,10 +9,48 @@ android:background="#ffffff">
     android:layout_height="wrap_content"
     android:iconifiedByDefault="false"
     android:layout_centerHorizontal="true"
-    android:queryHint="@string/jiancedianchaxun"/>
+    android:queryHint="@string/jiancedianchaxun"
+    android:visibility="gone"/>
+    <LinearLayout
+        android:id="@+id/ll_item3_search"
+        android:layout_width="match_parent"
+        android:layout_height="35dp"
+        android:layout_marginEnd="20dp"
+        android:layout_centerHorizontal="true"
+        android:background="@drawable/linearlayout_corner_search"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:paddingEnd="20dp"
+        android:paddingStart="20dp">
+        <ImageView
+            android:id="@+id/iv_item3_search"
+            android:layout_width="15dp"
+            android:layout_height="15dp"
+            android:adjustViewBounds="true"
+            android:scaleType="fitXY"
+            android:src="@drawable/search" />
+        <AutoCompleteTextView
+            android:id="@+id/actv_itenm3_search"
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            android:layout_marginStart="15dp"
+            android:background="@null"
+            android:completionThreshold="1"
+            android:hint="@string/jiancedianchaxun"
+            android:imeOptions="actionSearch"
+            android:maxLength="12"
+            android:dropDownHeight="200dp"
+            android:dropDownWidth="180dp"
+            android:textColor="#317F6D"
+            android:textColorHint="#317F6D"
+            android:textCursorDrawable="@drawable/edittext_cursor"
+            android:textSize="15sp" />
+    </LinearLayout>
 <superlibrary.recycleview.SuperRecyclerView
     android:id="@+id/srv_item3"
-    android:layout_below="@+id/sv_item3"
+    android:layout_below="@+id/ll_item3_search"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     />

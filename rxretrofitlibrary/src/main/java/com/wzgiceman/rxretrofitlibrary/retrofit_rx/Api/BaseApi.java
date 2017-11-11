@@ -15,7 +15,7 @@ public abstract class BaseApi {
     /*是否需要缓存处理*/
     private boolean cache = false;
     /*基础url*/
-    private String baseUrl = "https://www.baidu.com/";
+    private String baseUrl = "http://192.168.8.100:9005/";
     /*方法-如果需要缓存必须设置这个参数；不需要不用設置*/
     private String method = "";
     /*超时时间-默认6秒*/
@@ -25,7 +25,7 @@ public abstract class BaseApi {
     /*无网络的情况下本地缓存时间默认30天*/
     private int cookieNoNetWorkTime = 24 * 60 * 60 * 30;
     /* retry次数*/
-    private int retryCount = 1;
+    private int retryCount =0;
     /*retry延迟*/
     private long retryDelay = 100;
     /*retry叠加延迟*/

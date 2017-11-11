@@ -8,21 +8,21 @@ import com.google.gson.annotations.SerializedName;
 
 public class SteadyStateAlarm {
 
-    @SerializedName("supplyUnit")
+    @SerializedName("GD_NAME")
     private String gongdiandanwei;
-    @SerializedName("stationName")
+    @SerializedName("SUB_NAME")
     private String diaanzhanmingcheng;
-    @SerializedName("monitoringPoint")
+    @SerializedName("LINE_NAME")
     private String jiancedian;
-    @SerializedName("IndicatorType")
+    @SerializedName("TYPE_NAME")
     private String zhibiaoleixing;
-    @SerializedName("occurrenceTime")
+    @SerializedName("TIMEID")
     private String fashengshijian;
-    @SerializedName("internationalValue")
+    @SerializedName("OVERLIMIT")
     private Double guojizhi;
-    @SerializedName("actualValue")
+    @SerializedName("LIMIT_VALUE")
     private Double shijizhi;
-    @SerializedName("outValue")
+    @SerializedName("VALUE")
     private Double yuechuzhi;
 
     public String getGongdiandanwei() {

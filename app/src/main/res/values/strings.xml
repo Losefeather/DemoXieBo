@@ -14,14 +14,15 @@
     <string name="fashengshijian">发生时间</string>
     <string name="chixushijian">持续时间(ms)</string>
     <string name="wanzhenglv">完整率</string>
-    <string name="zaixianlv_one">在线率1</string>
-    <string name="zaixianlv_two">在线率2(数据量)</string>
+    <string name="zaixianlv_one">在线率</string>
+    <string name="zaixianlv_two">在线率(国网)</string>
     <string name="zhibiaogailan">指标概览</string>
     <string name="jiancedianzonglan">监测点总览</string>
     <string name="jiancedian">监测点</string>
     <string name="zaiyun">在运</string>
     <string name="zhengchang">正常</string>
     <string name="yichang">异常</string>
+    <string name="jiancezhong">检测中</string>
     <string name="tingyun">停运</string>
     <string name="hegelv">-合格率</string>
     <string name="guojizhi">国标值</string>
@@ -57,7 +58,7 @@
     <string name="shanbian">闪变</string>
     <string name="dianyaxiebojibianlv">电压谐波畸变率</string>
     <string name="dianyaxiebohanyoulv">电压谐波含有率</string>
-    <string name="dianliuxiebohanyoulv">电流谐波含有率</string>
+    <string name="dianliuxiebohanyoulv">电流谐波幅值</string>
     <string name="shanbianyuexian">闪变越限</string>
     <string name="biandianzhan">变电站</string>
     <string name="jianceduixiangleixing">监测对象类型</string>
@@ -67,8 +68,8 @@
     <string name="gongdianshebeirongliang">供电设备容量</string>
     <string name="yonghuxieyirongliang">用户协议容量</string>
     <string name="jizhunrongliang">基准容量</string>
-    <string name="pt">PT变比</string>
-    <string name="ct">CT变比</string>
+    <string name="pt">PT变比1/PT变比2</string>
+    <string name="ct">CT变比1/CT变比2</string>
     <string name="zhongduanchangjia">终端厂家</string>
     <string name="zhongduanxinghao">终端型号</string>
 

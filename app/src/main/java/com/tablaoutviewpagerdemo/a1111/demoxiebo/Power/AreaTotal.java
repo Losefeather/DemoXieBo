@@ -10,19 +10,19 @@ import com.google.gson.annotations.SerializedName;
 public class AreaTotal {
 
     //名称
-    @SerializedName("areaName")
+    @SerializedName("gd_name")
     private String name;
     //在线率1
-    @SerializedName("onlineRate1")
-    private float Online1;
+    @SerializedName("online_rate")
+    private String Online1;
     //在线率2
-    @SerializedName("onlineRate2")
-    private float Online2;
+    @SerializedName("gw_online_rate")
+    private String Online2;
     //完整率
-    @SerializedName("completeRate")
-    private float integrity;
+    @SerializedName("data_rate")
+    private String integrity;
     //数量
-    @SerializedName("areaNumber")
+    @SerializedName("monitor_count")
     private int num;
 
     public int getNum() {
@@ -41,30 +41,27 @@ public class AreaTotal {
         this.name = name;
     }
 
-    public float getOnline1() {
+    public String getOnline1() {
         return Online1;
     }
 
-    public void setOnline1(float online1) {
+    public void setOnline1(String online1) {
         Online1 = online1;
     }
 
-    public float getOnline2() {
+    public String getOnline2() {
         return Online2;
     }
 
-    public void setOnline2(float online2) {
+    public void setOnline2(String online2) {
         Online2 = online2;
     }
 
-    public float getIntegrity() {
+    public String getIntegrity() {
         return integrity;
     }
 
-    public void setIntegrity(float integrity) {
+    public void setIntegrity(String integrity) {
         this.integrity = integrity;
     }
-
-
-
 }

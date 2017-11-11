@@ -4,8 +4,10 @@ package com.tablaoutviewpagerdemo.a1111.demoxiebo;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.TextView;
@@ -33,8 +35,8 @@ public class FeagmentActivity extends RxFragmentActivity {
     private static Button bt_back;
     @Override
     protected void onCreate( Bundle savedInstanceState) {
-        ActivityManager.getInstance().addActivity(this);
         super.onCreate(savedInstanceState);
+        ActivityManager.getInstance().addActivity(this);
         setContentView(R.layout.fragment_menu);
         tv_title = this.findViewById(R.id.tv_menu_title);
         tv1=this.findViewById(R.id.tv_item1);
@@ -49,7 +51,9 @@ public class FeagmentActivity extends RxFragmentActivity {
         }else{
             bt_back.setVisibility(View.VISIBLE);
         }
+        Log.e(TAG,"到这里了");
         setMainView(1);
+        Log.e(TAG,"到这里了2");
         FragmentFactory.getFragmentInstance(getSupportFragmentManager(), FragmentItem4.TAG);
         civ.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -107,6 +111,7 @@ public class FeagmentActivity extends RxFragmentActivity {
                 }
             }
         });
+        Log.e(TAG,"到这里了4");
     }
 
     public  void setMainView(int index){

@@ -10,12 +10,18 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
+import android.widget.ImageView;
 import android.widget.SearchView;
+
+import com.tablaoutviewpagerdemo.a1111.demoxiebo.Common.FuzzyQuery.SearchAdapter;
 import com.tablaoutviewpagerdemo.a1111.demoxiebo.FeagmentActivity;
+import com.tablaoutviewpagerdemo.a1111.demoxiebo.Http.HttpPowerAPI.HttpPowerApi;
 import com.tablaoutviewpagerdemo.a1111.demoxiebo.Power.PowerMonitorPoint;
 import com.tablaoutviewpagerdemo.a1111.demoxiebo.R;
 import com.trello.rxlifecycle.components.support.RxFragment;
+import com.wzgiceman.rxretrofitlibrary.retrofit_rx.exception.ApiException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,7 +39,7 @@ import static com.tablaoutviewpagerdemo.a1111.demoxiebo.FeagmentActivity.setButt
  * Created by a1111 on 17/9/30.
  */
 
-public class FragmentItem1Info extends BaseRxFragment {
+public class FragmentItem1Info extends BaseRxFragment  {
 
     public static final String TAG="FragmentItem1Info";
     private View view;
@@ -41,7 +47,16 @@ public class FragmentItem1Info extends BaseRxFragment {
     private SuperRecyclerView srv;
     private List<PowerMonitorPoint> powerList=new ArrayList<PowerMonitorPoint>();
     private SuperRecyclerViewAdapter1 srva;
-    private AutoCompleteTextView autoCompleteTextView;
+    private AutoCompleteTextView search;
+    private SearchAdapter searchAdapter;
+    private ArrayAdapter<String> spinnerAdapter;
+    private ImageView imageView;
+    private int page =1;
+    private int count=5;
+    private HttpPowerApi httpPowerApi=new HttpPowerApi(this,this);
+    private boolean isRefresh=false;
+    private String busiName="",stationName="";
+    private String[] str = {"东丽","南开","武清", "城东", "城西","检修","欢喜庄"};
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -140,6 +155,15 @@ public class FragmentItem1Info extends BaseRxFragment {
         srv.completeLoadMore();
     }
 
+    @Override
+    public void onNext(String resulte, String method) {
+        super.onNext(resulte, method);
+    }
+
+    @Override
+    public void onError(ApiException e, String method) {
+        super.onError(e, method);
+    }
 }
 class SuperRecyclerViewAdapter1 extends SuperBaseAdapter<PowerMonitorPoint> {
 
