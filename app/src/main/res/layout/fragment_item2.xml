@@ -3,14 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#ffffff">
-    <SearchView
-        android:id="@+id/sv_item2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:iconifiedByDefault="false"
-        android:layout_centerHorizontal="true"
-        android:queryHint="@string/jiancedianchaxun"
-        android:visibility="gone"/>
+
     <LinearLayout
         android:id="@+id/ll_search"
         android:layout_width="match_parent"
@@ -26,11 +19,11 @@
         android:paddingStart="20dp">
         <ImageView
             android:id="@+id/iv_item2_search"
-            android:layout_width="15dp"
-            android:layout_height="15dp"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
             android:adjustViewBounds="true"
             android:scaleType="fitXY"
-            android:src="@drawable/search" />
+            android:src="@drawable/txt_search_clear" />
         <AutoCompleteTextView
             android:id="@+id/search"
             android:layout_width="match_parent"

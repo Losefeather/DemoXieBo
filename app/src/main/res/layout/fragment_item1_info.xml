@@ -4,16 +4,46 @@
     android:layout_height="match_parent"
     android:background="#ffffff">
 
-<SearchView
-    android:id="@+id/sv_item1_info"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:iconifiedByDefault="false"
-    android:layout_centerHorizontal="true"
-    android:queryHint="@string/jiancedianchaxun"/>
+    <LinearLayout
+        android:id="@+id/ll_item1_search"
+        android:layout_width="match_parent"
+        android:layout_height="35dp"
+        android:layout_marginEnd="20dp"
+        android:layout_centerHorizontal="true"
+        android:background="@drawable/linearlayout_corner_search"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:paddingEnd="20dp"
+        android:paddingStart="20dp">
+        <ImageView
+            android:id="@+id/iv_item1_search"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:adjustViewBounds="true"
+            android:scaleType="fitXY"
+            android:src="@drawable/txt_search_clear" />
+        <AutoCompleteTextView
+            android:id="@+id/actv_itenm1_search"
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            android:layout_marginStart="15dp"
+            android:background="@null"
+            android:completionThreshold="1"
+            android:hint="@string/jiancedianchaxun"
+            android:imeOptions="actionSearch"
+            android:maxLength="12"
+            android:dropDownHeight="200dp"
+            android:dropDownWidth="180dp"
+            android:textColor="#317F6D"
+            android:textColorHint="#317F6D"
+            android:textCursorDrawable="@drawable/edittext_cursor"
+            android:textSize="15sp" />
+    </LinearLayout>
     <superlibrary.recycleview.SuperRecyclerView
         android:id="@+id/srv_item1_info"
-        android:layout_below="@+id/sv_item1_info"
+        android:layout_below="@+id/ll_item1_search"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 

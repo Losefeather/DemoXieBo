@@ -7,16 +7,26 @@ import com.google.gson.annotations.SerializedName;
  */
 
 public class Power {
-    @SerializedName("areaName")
+    @SerializedName("gd_name")
     private String Name;
-    @SerializedName("powerUp")
+    @SerializedName("zscount")
     private String Zanshengdianya;
-    @SerializedName("powerDown")
+    @SerializedName("zjcount")
     private String Zanjiangdianya;
-    @SerializedName("powerPause")
+    @SerializedName("zdcount")
     private String Duanshizhongduan;
-    @SerializedName("areaNumber")
+    @SerializedName("eventcount")
     private int Num;
+    @SerializedName("gd_index")
+    private String gdName;
+
+    public String getGdName() {
+        return gdName;
+    }
+
+    public void setGdName(String gdName) {
+        this.gdName = gdName;
+    }
 
     public int getNum() {
         return Num;

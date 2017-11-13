@@ -15,11 +15,16 @@ import android.widget.TextView;
 import com.tablaoutviewpagerdemo.a1111.demoxiebo.Common.ActivityManager;
 import com.tablaoutviewpagerdemo.a1111.demoxiebo.Common.SysApplication;
 import com.tablaoutviewpagerdemo.a1111.demoxiebo.fragment.FragmentItem1;
+import com.tablaoutviewpagerdemo.a1111.demoxiebo.fragment.FragmentItem1Info;
 import com.tablaoutviewpagerdemo.a1111.demoxiebo.fragment.FragmentItem2;
+import com.tablaoutviewpagerdemo.a1111.demoxiebo.fragment.FragmentItem2Info;
 import com.tablaoutviewpagerdemo.a1111.demoxiebo.fragment.FragmentItem3;
+import com.tablaoutviewpagerdemo.a1111.demoxiebo.fragment.FragmentItem3Info;
 import com.tablaoutviewpagerdemo.a1111.demoxiebo.fragment.FragmentItem4;
 import com.tablaoutviewpagerdemo.a1111.demoxiebo.fragment.FragmentUserInfo;
 import com.tablaoutviewpagerdemo.a1111.demoxiebo.ui.CircleImageView.CircleImageView;
+import com.tablaoutviewpagerdemo.a1111.demoxiebo.ui.CustomDialog.CustomDialog;
+import com.tablaoutviewpagerdemo.a1111.demoxiebo.ui.KyDialog.KyDialogBuilder;
 import com.trello.rxlifecycle.components.support.RxFragmentActivity;
 
 /**
@@ -51,9 +56,7 @@ public class FeagmentActivity extends RxFragmentActivity {
         }else{
             bt_back.setVisibility(View.VISIBLE);
         }
-        Log.e(TAG,"到这里了");
         setMainView(1);
-        Log.e(TAG,"到这里了2");
         FragmentFactory.getFragmentInstance(getSupportFragmentManager(), FragmentItem4.TAG);
         civ.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -111,8 +114,25 @@ public class FeagmentActivity extends RxFragmentActivity {
                 }
             }
         });
-        Log.e(TAG,"到这里了4");
     }
+    public void goBack(){
+                if(Num==1){
+                    setMainView(1);
+                    FragmentFactory.getFragmentInstance(getSupportFragmentManager(), FragmentItem4.TAG);
+                }
+                if(Num==2){
+                    setMainView(2);
+                    FragmentFactory.getFragmentInstance(getSupportFragmentManager(), FragmentItem2.TAG);
+                }
+                if(Num==3){
+                    setMainView(3);
+                    FragmentFactory.getFragmentInstance(getSupportFragmentManager(), FragmentItem3.TAG);
+                }
+                if(Num==4){
+                    setMainView(4);
+                    FragmentFactory.getFragmentInstance(getSupportFragmentManager(),FragmentItem1.TAG);
+                }
+            }
 
     public  void setMainView(int index){
         switch (index) {
@@ -158,12 +178,45 @@ public class FeagmentActivity extends RxFragmentActivity {
             bt_back.setVisibility(View.VISIBLE);
         }
     }
-//    @Override
-//    public boolean onKeyDown(int keyCode, KeyEvent event) {
-//        if (keyCode == KeyEvent.KEYCODE_BACK && event.getRepeatCount() == 0) {
-//            SysApplication.getInstance().exit();
-//            return true;
-//        }
-//        return super.onKeyDown(keyCode, event);
-//    }
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK && event.getRepeatCount() == 0) {
+            Log.e(TAG,""+"执行了"+FragmentFactory.currentFragment);
+            if(FragmentFactory.currentFragment.equalsIgnoreCase(FragmentItem1.TAG)||
+                    FragmentFactory.currentFragment.equalsIgnoreCase(FragmentItem2.TAG)||
+                    FragmentFactory.currentFragment.equalsIgnoreCase(FragmentItem3.TAG)||
+                    FragmentFactory.currentFragment.equalsIgnoreCase(FragmentItem4.TAG)){
+                final KyDialogBuilder builder = new KyDialogBuilder(this);
+                builder.setTitle("查找附近wifi网络");
+                builder.setMessage("确认退出程序吗?");
+                builder.setNegativeButton("取消", new View.OnClickListener(){//添加取消按钮
+                    @Override
+                    public void onClick(View arg0) {
+                        builder.dismiss();//关闭对话框
+                    }
+                });
+                builder.setPositiveButton("确认", new View.OnClickListener(){//添加确认按钮
+                    @Override
+                    public void onClick(View arg0) {
+                        ActivityManager.getInstance().appExit(getApplicationContext());
+                        builder.dismiss();
+                    }
+                });
+                builder.setPositiveNormalTextColor(0xFF48CE3A);//设置确认按钮的字体颜色
+                builder.setPositivePressedTextColor(0xFF48CE3A);//设置确认按钮，当手指按下时的字体颜色
+                builder.setBackgroundAlpha(160);//对话框外区域的透明度
+                builder.show();//打开对话框
+                Log.e(TAG,"chuxianle");
+            }else if(FragmentFactory.currentFragment.equals(FragmentItem1Info.TAG)){
+                goBack();
+            }else if(FragmentFactory.currentFragment.equals(FragmentItem2Info.TAG)){
+                goBack();
+            }else if(FragmentFactory.currentFragment.equals(FragmentItem3Info.TAG)){
+                goBack();
+            }
+
+            return true;
+        }
+        return super.onKeyDown(keyCode, event);
+    }
 }

@@ -1,6 +1,12 @@
 package com.tablaoutviewpagerdemo.a1111.demoxiebo.Power;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+import com.tablaoutviewpagerdemo.a1111.demoxiebo.Http.HttpPowerAPI.PowerResultEntity;
+
+import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by a1111 on 17/11/1.

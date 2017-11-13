@@ -43,13 +43,15 @@ public class HttpManagerApi extends BaseApi {
     }
 
 
-    protected void doHttpDeal(Observable observable) {
-            manager.httpDeal(observable, this);
+    protected void doHttpDeal(Observable observable,boolean setShowprogess) {
+        this.setShowProgress(false);
+        manager.httpDeal(observable, this);
     }
     protected void doHttpDealForFragmentActivity(Observable observable) {
         manager.httpDealForFragmentActivity(observable, this);
     }
     protected void doHttpDealForFragment(Observable observable) {
+
         manager.httpDealForFragment(observable, this);
     }
     @Override

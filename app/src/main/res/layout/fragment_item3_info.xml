@@ -26,11 +26,11 @@ android:background="#ffffff">
         android:paddingStart="20dp">
         <ImageView
             android:id="@+id/iv_item3_search"
-            android:layout_width="15dp"
-            android:layout_height="15dp"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
             android:adjustViewBounds="true"
             android:scaleType="fitXY"
-            android:src="@drawable/search" />
+            android:src="@drawable/txt_search_clear" />
         <AutoCompleteTextView
             android:id="@+id/actv_itenm3_search"
             android:layout_width="match_parent"

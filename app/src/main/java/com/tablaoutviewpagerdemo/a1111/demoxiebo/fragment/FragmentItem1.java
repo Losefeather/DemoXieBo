@@ -24,6 +24,8 @@ import com.google.gson.reflect.TypeToken;
 import com.tablaoutviewpagerdemo.a1111.demoxiebo.FeagmentActivity;
 import com.tablaoutviewpagerdemo.a1111.demoxiebo.FragmentFactory;
 import com.tablaoutviewpagerdemo.a1111.demoxiebo.Http.HttpMessageEntity.BaseResultEntity;
+import com.tablaoutviewpagerdemo.a1111.demoxiebo.Http.HttpPowerAPI.HttpPowerApi;
+import com.tablaoutviewpagerdemo.a1111.demoxiebo.Http.HttpPowerAPI.PowerResultEntity;
 import com.tablaoutviewpagerdemo.a1111.demoxiebo.Power.AreaTotal;
 import com.tablaoutviewpagerdemo.a1111.demoxiebo.Power.CommonPowerList;
 import com.tablaoutviewpagerdemo.a1111.demoxiebo.Power.Power;
@@ -36,6 +38,9 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Random;
 import static com.tablaoutviewpagerdemo.a1111.demoxiebo.FeagmentActivity.setButton;
+import static com.tablaoutviewpagerdemo.a1111.demoxiebo.FragmentFactory.getFragmentInstance;
+import static com.tablaoutviewpagerdemo.a1111.demoxiebo.Power.CommonPowerList.powerArrayList;
+
 /**
  * Created by a1111 on 17/9/28.
  */
@@ -44,19 +49,21 @@ public class FragmentItem1 extends BaseRxFragment {
     public static final String TAG="FragmentItem1";
     private View view;
     private SuperRecyclerView rcv;
-    private List<Power> powerList= new ArrayList<Power>();;
+    private ArrayList<Power> powerList= new ArrayList<Power>();;
     private SuperRecyclerViewAdapter srva;
-    private  String[] ss;
     private boolean isUp=true;
     private Spinner spinner;
     private ArrayAdapter<String> spinnerAdapter;
-    private int searchPage=0;
+    private HttpPowerApi httpPowerApi;
     @Override
     public View onCreateView(LayoutInflater inflater,  ViewGroup container,  Bundle savedInstanceState) {
+        Log.e(TAG,"init---------"+TAG);
         FeagmentActivity.Num=0;
         setButton();
-        ss= new String[]{getString(R.string.tianjin),getString(R.string.wuqing),getString(R.string.baodi),getString(R.string.binhai),getString(R.string.chengdong),
-                getString(R.string.chengxi),getString(R.string.jianxiu)};
+        httpPowerApi=new HttpPowerApi(this,this);
+         if(powerArrayList.size()>0){
+             powerList= powerArrayList;
+         }
         view=inflater.inflate(R.layout.fragment_item1,container,false);
         rcv = view.findViewById(R.id.rcv);
         initData(isUp);
@@ -93,100 +100,30 @@ public class FragmentItem1 extends BaseRxFragment {
         srva=new SuperRecyclerViewAdapter(this.getContext(),powerList,this.getFragmentManager());
         rcv.setLayoutManager(layoutManager);
         rcv.setRefreshEnabled(true);//可以定制是否开启下拉刷新
-        rcv.setLoadMoreEnabled(true);//可以定制是否开启加载更多
+        rcv.setLoadMoreEnabled(false);//可以定制是否开启加载更多
         rcv.setLoadingListener(new SuperRecyclerView.LoadingListener() {
             @Override
             public void onRefresh() {
-                Handler  handler = new Handler(){
-                    @Override
-                    public void handleMessage(Message msg) {
-                        reFreash(isUp);
-                        super.handleMessage(msg);
-                    }
-                };
-                handler.sendEmptyMessage(123);
+                httpPowerApi.getTransientStatePowerList(true,CommonPowerList.GET_TRANSIENTSTATEPOWERLIST,CommonPowerList.BUSI_ZT,CommonPowerList.sercetKey,"2017-06-15"+" 00:00:00","2017-06-15"+" 23:59:59");
             }
 
             @Override
             public void onLoadMore() {
-                Handler  handler = new Handler(){
-                    @Override
-                    public void handleMessage(Message msg) {
-                        rcv.completeLoadMore();
-                        super.handleMessage(msg);
-                    }
-                };
+
             }
         });//下拉刷新，上拉加载的监听
         rcv.setRefreshProgressStyle(ProgressStyle.BallSpinFadeLoader);//下拉刷新的样式
         rcv.setLoadingMoreProgressStyle(ProgressStyle.BallClipRotate);//上拉加载的样式
         rcv.setArrowImageView(R.mipmap.ic_pulltorefresh_arrow);//设置下拉箭头
         rcv.setAdapter(srva);
-        dada();
+
         return view;
     }
-    public void dada(){
-        JsonObject jsonObject = new JsonObject();
-        JsonObject jsonObject1 = new JsonObject();
-        JsonObject jsonObject2 = new JsonObject();
 
-        jsonObject.addProperty("Result","100");
-        jsonObject.addProperty("ResultMsg","100");
-
-        JsonArray jsonArray = new JsonArray();
-        jsonObject1.addProperty("areaName","天津");
-        jsonObject1.addProperty("areaNumber","12");
-        jsonObject1.addProperty("completeRate","99");
-        jsonObject1.addProperty("onlineRate1","99");
-        jsonObject1.addProperty("onlineRate2","89");
-        jsonObject2.addProperty("areaName","城东");
-        jsonObject2.addProperty("areaNumber","12");
-        jsonObject2.addProperty("completeRate","99");
-        jsonObject2.addProperty("onlineRate1","99");
-        jsonObject2.addProperty("onlineRate2","89");
-        jsonArray.add(jsonObject1);
-        jsonArray.add(jsonObject2);
-        jsonObject.add("ReturnValue",jsonArray);
- //       Log.e(TAG,""+jsonObject.toString());
-        Gson gson = new Gson();
-        Type type = new TypeToken<BaseResultEntity<List<AreaTotal>>>(){}.getType();
-        BaseResultEntity<List<AreaTotal>> baseInfo=gson.fromJson(jsonObject,type);
-        for(int i=0;i<baseInfo.getData().size();i++){
-            Log.e(TAG,""+baseInfo.getData().get(i).getName());
-        }
-
-
-
-
-
-
-    }
     public void initData(boolean isUp){
-        powerList.clear();
-        Random random = new Random(100);
-        for(int i =0;i< ss.length;i++){
-            Power power = new Power();
-            power.setName(ss[i]);
-            power.setDuanshizhongduan(getString(R.string.duanshizhongduan)+":"+String.valueOf(random.nextInt(10)));
-            power.setZanjiangdianya(getString(R.string.dianyazanjiang)+":"+String.valueOf(random.nextInt(10)));
-            power.setZanshengdianya(getString(R.string.dianyazansheng)+":"+String.valueOf(random.nextInt(10)));
-            power.setNum(random.nextInt(100));
-            powerList.add(power);
-        }
         CollectionsList(powerList,isUp);
     }
     public void reFreash(boolean isUp){
-        powerList.clear();
-        Random random = new Random(new Random().nextInt(10));
-        for(int i =0;i< ss.length;i++){
-            Power power = new Power();
-            power.setName(ss[i]);
-            power.setDuanshizhongduan(getString(R.string.duanshizhongduan)+":"+String.valueOf(random.nextInt(10)));
-            power.setZanjiangdianya(getString(R.string.dianyazanjiang)+":"+String.valueOf(random.nextInt(10)));
-            power.setZanshengdianya(getString(R.string.dianyazansheng)+":"+String.valueOf(random.nextInt(10)));
-            power.setNum(random.nextInt(100));
-            powerList.add(power);
-        }
         CollectionsList(powerList,isUp);
         srva.notifyDataSetChanged();
         rcv.completeRefresh();
@@ -227,11 +164,15 @@ public class FragmentItem1 extends BaseRxFragment {
 
     @Override
     public void onNext(String resulte, String method) {
-        if(method.equals(CommonPowerList.GET_LONGIN)){
-
-
-
-
+        powerArrayList.clear();
+        if(method.equals(CommonPowerList.GET_TRANSIENTSTATEPOWERLIST)){
+            Gson gson = new Gson();
+            Type type = new TypeToken<PowerResultEntity<List<Power>>>(){}.getType();
+            PowerResultEntity<List<Power>> baseInfo=gson.fromJson(resulte,type);
+            for(int i=0;i<baseInfo.getData().size();i++) {
+                powerArrayList.add(baseInfo.getData().get(i));
+            }
+            reFreash(isUp);
         }
         super.onNext(resulte, method);
     }
@@ -239,6 +180,12 @@ public class FragmentItem1 extends BaseRxFragment {
     @Override
     public void onError(ApiException e, String method) {
         super.onError(e, method);
+    }
+
+    @Override
+    public void onDestroyView() {
+        CommonPowerList.powerArrayList=this.powerList;
+        super.onDestroyView();
     }
 }
 class SuperRecyclerViewAdapter extends SuperBaseAdapter<Power>{
@@ -258,11 +205,11 @@ class SuperRecyclerViewAdapter extends SuperBaseAdapter<Power>{
     }
 
     @Override
-    protected void convert(final BaseViewHolder holder, Power item, int position) {
+    protected void convert(final BaseViewHolder holder, final Power item, int position) {
         holder.setText(R.id.tv_recycler_name,item.getName());
-        holder.setText(R.id.tv_recycler_item1,item.getZanjiangdianya());
-        holder.setText(R.id.tv_recycler_item2,item.getZanshengdianya());
-        holder.setText(R.id.tv_recycler_item3,item.getDuanshizhongduan());
+        holder.setText(R.id.tv_recycler_item1,"电压暂降："+item.getZanjiangdianya());
+        holder.setText(R.id.tv_recycler_item2,"电压暂升："+item.getZanshengdianya());
+        holder.setText(R.id.tv_recycler_item3,"短时中断："+item.getDuanshizhongduan());
         holder.setText(R.id.tv_recycler_item_num,item.getNum()+"");
         holder.setTag(R.id.rl_recyclerview,"false");
         holder.getView(R.id.bt_recycler_name).setOnClickListener(new View.OnClickListener() {
@@ -278,9 +225,28 @@ class SuperRecyclerViewAdapter extends SuperBaseAdapter<Power>{
                 }
             }
         });
-        holder.getView(R.id.ll_recyclerview_item).setOnClickListener(new View.OnClickListener() {
+
+        holder.getView(R.id.tv_recycler_item1).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                FragmentItem1Info.key="ZJ";
+                FragmentItem1Info.gdName=item.getGdName();
+                FragmentFactory.getFragmentInstance(fragmentManager,FragmentItem1Info.TAG);
+            }
+        });
+        holder.getView(R.id.tv_recycler_item2).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                FragmentItem1Info.key="ZS";
+                FragmentItem1Info.gdName=item.getGdName();
+                FragmentFactory.getFragmentInstance(fragmentManager,FragmentItem1Info.TAG);
+            }
+        });
+        holder.getView(R.id.tv_recycler_item3).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                FragmentItem1Info.key="ZD";
+                FragmentItem1Info.gdName=item.getGdName();
                 FragmentFactory.getFragmentInstance(fragmentManager,FragmentItem1Info.TAG);
             }
         });

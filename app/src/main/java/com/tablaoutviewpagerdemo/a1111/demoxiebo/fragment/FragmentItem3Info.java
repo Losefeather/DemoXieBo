@@ -9,6 +9,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,6 +23,7 @@ import com.google.gson.reflect.TypeToken;
 import com.tablaoutviewpagerdemo.a1111.demoxiebo.Common.FuzzyQuery.SearchAdapter;
 import com.tablaoutviewpagerdemo.a1111.demoxiebo.FeagmentActivity;
 import com.tablaoutviewpagerdemo.a1111.demoxiebo.FragmentFactory;
+import com.tablaoutviewpagerdemo.a1111.demoxiebo.Http.HttpPowerAPI.HttpPageCount;
 import com.tablaoutviewpagerdemo.a1111.demoxiebo.Http.HttpPowerAPI.HttpPowerApi;
 import com.tablaoutviewpagerdemo.a1111.demoxiebo.Http.HttpPowerAPI.PowerResultEntity;
 import com.tablaoutviewpagerdemo.a1111.demoxiebo.Power.CommonPowerList;
@@ -65,14 +67,16 @@ public class FragmentItem3Info extends BaseRxFragment {
     private SearchAdapter searchAdapter;
     private ImageView imageView;
     public static String type;
+    private int totalPage=100;
     private int page =1;
     private int count=5;
-    private HttpPowerApi httpPowerApi;
+    private HttpPowerApi httpPowerApi=new HttpPowerApi(this,this);;
     private boolean isRefresh=false;
     private String[] str = {""};
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        Log.e(TAG,"init---------"+TAG);
         FeagmentActivity.Num=3;
         setButton();
         view=inflater.inflate(R.layout.fragment_item3_info,container,false);
@@ -80,7 +84,6 @@ public class FragmentItem3Info extends BaseRxFragment {
         srva=new SuperRecyclerViewZAdapter(this.getContext(),list,this.getFragmentManager());
         search=view.findViewById(R.id.actv_itenm3_search);
         imageView=view.findViewById(R.id.iv_item3_search);
-        httpPowerApi=new HttpPowerApi(this,this);
         doWithStation(page);
         searchAdapter=new SearchAdapter(getContext(), android.R.layout.simple_list_item_1,inloadngString(),SearchAdapter.ALL);
         search.setAdapter(searchAdapter);
@@ -120,9 +123,10 @@ public class FragmentItem3Info extends BaseRxFragment {
     }
     private void  doWithStation(int page){
         String stationName="";
-        if(!search.getText().equals("")){
+        if(!search.getText().toString().equals("")){
             stationName=getStationName(search.getText().toString());
         }
+        Log.e(TAG,"stationName:"+stationName);
         httpPowerApi.getSteadyStateInfoList(true, CommonPowerList.GET_STEADYSTATEINFOLIST,CommonPowerList.BUSI_WTGJXQ,CommonPowerList.sercetKey,stationName,page,count,type,"2017-06-15"+" 00:00:00","2017-06-15"+" 23:59:59");
 
     }
@@ -143,9 +147,20 @@ public class FragmentItem3Info extends BaseRxFragment {
         imageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                page=1;
-                isRefresh=true;
-                doWithStation(page);
+               search.setText("");
+            }
+        });
+        search.setOnKeyListener(new View.OnKeyListener() {
+            @Override
+            public boolean onKey(View view, int i, KeyEvent keyEvent) {
+                if (KeyEvent.KEYCODE_ENTER == i && KeyEvent.ACTION_DOWN == keyEvent.getAction()) {
+                    //处理事件
+                    page=1;
+                    isRefresh=true;
+                    doWithStation(page);
+                    return true;
+                }
+                return false;
             }
         });
     }
@@ -155,9 +170,13 @@ public class FragmentItem3Info extends BaseRxFragment {
         doWithStation(page);
     }
     private void onLodMoreData(){
-        page+=1;
-        isRefresh=false;
-        doWithStation(page);
+        if(totalPage-page*count>count) {
+            page += 1;
+            isRefresh = false;
+            doWithStation(page);
+        }else{
+            srv.completeLoadMore();
+        }
     }
     @Override
     public void onNext(String resulte, String method) {
@@ -166,20 +185,20 @@ public class FragmentItem3Info extends BaseRxFragment {
                 Log.e(TAG,"onNextup");
                 list.clear();
                 Gson gson = new Gson();
-                Type type = new TypeToken<PowerResultEntity<List<SteadyStateAlarm>>>(){}.getType();
-                PowerResultEntity<List<SteadyStateAlarm>> baseInfo=gson.fromJson(resulte,type);
-                for(int i=0;i<baseInfo.getData().size();i++) {
-                    list.add(baseInfo.getData().get(i));
+                Type type = new TypeToken<PowerResultEntity<HttpPageCount<SteadyStateAlarm>>>(){}.getType();
+                PowerResultEntity<HttpPageCount<SteadyStateAlarm>> baseInfo=gson.fromJson(resulte,type);
+                for(int i=0;i<baseInfo.getData().getList().size();i++) {
+                    list.add(baseInfo.getData().getList().get(i));
                 }
                 srva.notifyDataSetChanged();
                 srv.completeRefresh();
             }else{
                 Log.e(TAG,"onNextdown");
                 Gson gson = new Gson();
-                Type type = new TypeToken<PowerResultEntity<List<SteadyStateAlarm>>>(){}.getType();
-                PowerResultEntity<List<SteadyStateAlarm>> baseInfo=gson.fromJson(resulte,type);
-                for(int i=0;i<baseInfo.getData().size();i++) {
-                    list.add(baseInfo.getData().get(i));
+                Type type = new TypeToken<PowerResultEntity<HttpPageCount<SteadyStateAlarm>>>(){}.getType();
+                PowerResultEntity<HttpPageCount<SteadyStateAlarm>> baseInfo=gson.fromJson(resulte,type);
+                for(int i=0;i<baseInfo.getData().getList().size();i++) {
+                    list.add(baseInfo.getData().getList().get(i));
                 }
                 srva.notifyDataSetChanged();
                 srv.completeLoadMore();

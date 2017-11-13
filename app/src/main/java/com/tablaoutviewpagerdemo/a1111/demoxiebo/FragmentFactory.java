@@ -23,14 +23,14 @@ import static com.tablaoutviewpagerdemo.a1111.demoxiebo.fragment.FragmentItem1.T
 
 public class FragmentFactory {
     public static Fragment fragment;
-
+    public static String currentFragment="";
     public static Fragment getFragmentInstance(FragmentManager fragmentManager, String tag) {
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        currentFragment=tag;
         if (fragment != null) {
             fragmentTransaction.hide(fragment);
         }
         if (tag.equals(FragmentPowerShowAll.TAG)) {
-            fragment = new FragmentPowerShowAll();
             fragmentTransaction.replace(R.id.content,fragment);
         }
         if(tag.equals(FragmentItem1.TAG)){

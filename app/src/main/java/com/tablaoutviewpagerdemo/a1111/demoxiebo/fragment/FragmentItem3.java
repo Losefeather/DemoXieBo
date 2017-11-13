@@ -9,6 +9,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.LinearLayoutManager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -70,6 +71,7 @@ public class FragmentItem3 extends BaseRxFragment implements HttpOnNextListener 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        Log.e(TAG,"init---------"+TAG);
         FeagmentActivity.Num = 0;
         setButton();
         ButterKnife.bind(this.getActivity());
@@ -121,7 +123,7 @@ public class FragmentItem3 extends BaseRxFragment implements HttpOnNextListener 
         rcvItem3.setLoadingListener(new SuperRecyclerView.LoadingListener() {
             @Override
             public void onRefresh() {
-                httpPowerApi.getSteadyStatePowerList(false, CommonPowerList.GET_STEADYSTATEPOWERLIST, CommonPowerList.BUSI_WTGJ, CommonPowerList.sercetKey, "2017-06-15" + " 00:00:00", "2017-06-15" + " 23:59:59");
+                httpPowerApi.getSteadyStatePowerList(true, CommonPowerList.GET_STEADYSTATEPOWERLIST, CommonPowerList.BUSI_WTGJ, CommonPowerList.sercetKey, "2017-06-15" + " 00:00:00", "2017-06-15" + " 23:59:59");
             }
 
             @Override
@@ -240,6 +242,7 @@ public class FragmentItem3 extends BaseRxFragment implements HttpOnNextListener 
     @Override
     public void onNext(String resulte, String method) {
         steadyStatePowerArrayList.clear();
+        powerList.clear();
         Gson gson = new Gson();
         Type type = new TypeToken<PowerResultEntity<List<SteadyStatePower>>>(){}.getType();
         PowerResultEntity<List<SteadyStatePower>> baseInfo=gson.fromJson(resulte,type);
@@ -255,6 +258,8 @@ public class FragmentItem3 extends BaseRxFragment implements HttpOnNextListener 
     public void onError(ApiException e, String method) {
         super.onError(e, method);
     }
+
+
 }
 
 class Item {

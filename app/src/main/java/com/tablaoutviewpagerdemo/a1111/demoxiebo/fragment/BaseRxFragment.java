@@ -1,5 +1,6 @@
 package com.tablaoutviewpagerdemo.a1111.demoxiebo.fragment;
 
+import com.tablaoutviewpagerdemo.a1111.demoxiebo.Http.HttpPowerAPI.HttpPowerApi;
 import com.trello.rxlifecycle.components.support.RxFragment;
 import com.wzgiceman.rxretrofitlibrary.retrofit_rx.exception.ApiException;
 import com.wzgiceman.rxretrofitlibrary.retrofit_rx.listener.HttpOnNextListener;
@@ -9,6 +10,7 @@ import com.wzgiceman.rxretrofitlibrary.retrofit_rx.listener.HttpOnNextListener;
  */
 
 public class BaseRxFragment extends RxFragment implements HttpOnNextListener{
+    //public HttpPowerApi powerApi= new HttpPowerApi(this,this);
     @Override
     public void onNext(String resulte, String method) {
 

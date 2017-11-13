@@ -24,12 +24,15 @@ import com.tablaoutviewpagerdemo.a1111.demoxiebo.Common.GetDateMethod.GetDateMet
 import com.tablaoutviewpagerdemo.a1111.demoxiebo.Common.MD5.MD5;
 import com.tablaoutviewpagerdemo.a1111.demoxiebo.Common.SysApplication;
 import com.tablaoutviewpagerdemo.a1111.demoxiebo.Http.HttpMessageEntity.BaseResultEntity;
+import com.tablaoutviewpagerdemo.a1111.demoxiebo.Http.HttpPowerAPI.HttpPageCount;
 import com.tablaoutviewpagerdemo.a1111.demoxiebo.Http.HttpPowerAPI.HttpPowerApi;
 import com.tablaoutviewpagerdemo.a1111.demoxiebo.Http.HttpPowerAPI.PowerResultEntity;
 import com.tablaoutviewpagerdemo.a1111.demoxiebo.Power.AreaTotal;
 import com.tablaoutviewpagerdemo.a1111.demoxiebo.Power.CommonPowerList;
+import com.tablaoutviewpagerdemo.a1111.demoxiebo.Power.Power;
 import com.tablaoutviewpagerdemo.a1111.demoxiebo.Power.PowerMonitorId;
 import com.tablaoutviewpagerdemo.a1111.demoxiebo.Power.SteadyStatePower;
+import com.tablaoutviewpagerdemo.a1111.demoxiebo.Power.SubstationInfo;
 import com.trello.rxlifecycle.components.RxActivity;
 import com.trello.rxlifecycle.components.support.RxAppCompatActivity;
 import com.wzgiceman.rxretrofitlibrary.retrofit_rx.exception.ApiException;
@@ -39,9 +42,13 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
+import static android.app.ProgressDialog.show;
 import static android.icu.lang.UCharacter.GraphemeClusterBreak.T;
 import static android.util.Log.e;
+import static com.tablaoutviewpagerdemo.a1111.demoxiebo.Power.CommonPowerList.steadyStatePowerArrayList;
+import static com.tablaoutviewpagerdemo.a1111.demoxiebo.Power.CommonPowerList.substationInfoArrayList;
 
+import android.app.ProgressDialog;
 
 /**
  * Created by a1111 on 17/9/28.
@@ -60,12 +67,14 @@ public class LoginActivity extends RxAppCompatActivity implements HttpOnNextList
     private String name,pass;
     private boolean choseRemember,choseAutoLogin;
     private HttpPowerApi httpPowerApi;
+    private ProgressDialog pb;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         ActivityManager.getInstance().addActivity(this);
         setContentView(R.layout.login);
         httpPowerApi=new HttpPowerApi(this,this);
+        pb = new ProgressDialog(this);
         // 初始化用户名、密码、记住密码、自动登录、登录按钮
         username = (EditText) findViewById(R.id.username);
         userpassword = (EditText) findViewById(R.id.userpassword);
@@ -88,6 +97,7 @@ public class LoginActivity extends RxAppCompatActivity implements HttpOnNextList
         if(choseAutoLogin){
             autologin.setChecked(true);
             httpPowerApi.getLogin(false,CommonPowerList.GET_LONGIN,CommonPowerList.BUSI_LOGIN,name, MD5.md5(pass));
+            pb.show(this,"",getString(R.string.login_loading),true);
         }
 
         login.setOnClickListener(new View.OnClickListener() {
@@ -98,6 +108,7 @@ public class LoginActivity extends RxAppCompatActivity implements HttpOnNextList
                 userNameValue = username.getText().toString();
                 passwordValue = userpassword.getText().toString();
                 httpPowerApi.getLogin(false, CommonPowerList.GET_LONGIN, CommonPowerList.BUSI_LOGIN,userNameValue, MD5.md5(passwordValue));
+                pb.show(getApplicationContext(),"",getString(R.string.login_loading),true);
             }
         });
 
@@ -134,7 +145,21 @@ public class LoginActivity extends RxAppCompatActivity implements HttpOnNextList
                 powerMonitorIdList.add(baseInfo.getData().get(i));
             }
             CommonPowerList.powerMonitorIdArrayList=powerMonitorIdList;
-            //3.获取指标概览
+            //3.获取监测点概览
+            httpPowerApi.getStationList(false,CommonPowerList.GET_STSATIONLIST,CommonPowerList.BUSI_JCDZL,CommonPowerList.sercetKey,"","",1,15);
+
+        }
+        if(method.equals(CommonPowerList.GET_STSATIONLIST)){
+            Gson gson = new Gson();
+            Type type = new TypeToken<PowerResultEntity<HttpPageCount<SubstationInfo>>>(){}.getType();
+            PowerResultEntity<HttpPageCount<SubstationInfo>> baseInfo=gson.fromJson(resulte,type);
+            ArrayList<SubstationInfo> substationInfoArrayList=new ArrayList<SubstationInfo>();
+            for(int i=0;i<baseInfo.getData().getList().size();i++) {
+                substationInfoArrayList.add(baseInfo.getData().getList().get(i));
+            }
+
+            CommonPowerList.substationInfoArrayList=substationInfoArrayList;
+            //4.获取指标概览
             httpPowerApi.getPowerList(false,CommonPowerList.GET_POWERLIST,CommonPowerList.BUSI_ZBGL,CommonPowerList.sercetKey,"2017-06-15"+" 00:00:00","2017-06-15"+" 23:59:59");
 
         }
@@ -147,7 +172,7 @@ public class LoginActivity extends RxAppCompatActivity implements HttpOnNextList
                 areaTotalArrayList.add(baseInfo.getData().get(i));
             }
             CommonPowerList.areaTotalArrayList=areaTotalArrayList;
-            //4.获取稳态告警
+            //5.获取稳态告警
             httpPowerApi.getSteadyStatePowerList(false,CommonPowerList.GET_STEADYSTATEPOWERLIST,CommonPowerList.BUSI_WTGJ,CommonPowerList.sercetKey,"2017-06-15"+" 00:00:00","2017-06-15"+" 23:59:59");
 
         }
@@ -160,9 +185,22 @@ public class LoginActivity extends RxAppCompatActivity implements HttpOnNextList
                    steadyStatePowerArrayList.add(baseInfo.getData().get(i));
             }
             CommonPowerList.steadyStatePowerArrayList=steadyStatePowerArrayList;
-            Intent intent =new Intent(LoginActivity.this,FeagmentActivity.class);
-            startActivity(intent);
-            //5.
+            //6.获取暂态告警
+            httpPowerApi.getTransientStatePowerList(false,CommonPowerList.GET_TRANSIENTSTATEPOWERLIST,CommonPowerList.BUSI_ZT,CommonPowerList.sercetKey,"2017-06-15"+" 00:00:00","2017-06-15"+" 23:59:59");
+           }
+           if(method.equals(CommonPowerList.GET_TRANSIENTSTATEPOWERLIST)){
+               Gson gson = new Gson();
+               Type type = new TypeToken<PowerResultEntity<List<Power>>>(){}.getType();
+               PowerResultEntity<List<Power>> baseInfo=gson.fromJson(resulte,type);
+               ArrayList<Power> powerArrayList=new ArrayList<Power>();
+               for(int i=0;i<baseInfo.getData().size();i++) {
+                   powerArrayList.add(baseInfo.getData().get(i));
+               }
+               CommonPowerList.powerArrayList=powerArrayList;
+               pb.dismiss();
+               Intent intent =new Intent(LoginActivity.this,FeagmentActivity.class);
+               startActivity(intent);
+
            }
         }
 
@@ -172,15 +210,24 @@ public class LoginActivity extends RxAppCompatActivity implements HttpOnNextList
         e(TAG,"error"+method+" ApiException"+e.toString());
         if(method.equals(CommonPowerList.GET_LONGIN)){
             Toast.makeText(this,this.getText(R.string.login_failed),Toast.LENGTH_SHORT).show();
+            pb.dismiss();
+        }
+        if(method.equals(CommonPowerList.GET_STSATIONLIST)){
+            httpPowerApi.getPowerList(false,CommonPowerList.GET_POWERLIST,CommonPowerList.BUSI_ZBGL,CommonPowerList.sercetKey,"2017-06-15"+" 00:00:00","2017-06-15"+" 23:59:59");
         }
         if(method.equals(CommonPowerList.GET_STSTIONINFOLIST)){
-            httpPowerApi.getPowerList(false,CommonPowerList.GET_POWERLIST,CommonPowerList.BUSI_ZBGL,CommonPowerList.sercetKey,"2017-06-15"+" 00:00:00","2017-06-15"+" 23:59:59");
+            httpPowerApi.getStationList(true,CommonPowerList.GET_STSATIONLIST,CommonPowerList.BUSI_JCDZL,CommonPowerList.sercetKey,"","",1,10);
         }
         if(method.equals(CommonPowerList.GET_POWERLIST)){
             httpPowerApi.getSteadyStatePowerList(false,CommonPowerList.GET_STEADYSTATEPOWERLIST,CommonPowerList.BUSI_WTGJ,CommonPowerList.sercetKey,"2017-06-15"+" 00:00:00","2017-06-15"+" 23:59:59");
         }
         if(method.equals(CommonPowerList.GET_STEADYSTATEPOWERLIST)){
-
+            httpPowerApi.getTransientStatePowerList(false,CommonPowerList.GET_TRANSIENTSTATEPOWERLIST,CommonPowerList.BUSI_ZT,CommonPowerList.sercetKey,"2017-06-15"+" 00:00:00","2017-06-15"+" 23:59:59");
+        }
+        if(method.equals(CommonPowerList.GET_TRANSIENTSTATEPOWERLIST)) {
+            Intent intent =new Intent(LoginActivity.this,FeagmentActivity.class);
+            startActivity(intent);
         }
     }
+
 }

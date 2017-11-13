@@ -29,11 +29,11 @@ public interface HttpPowerService {
     //暂态告警接口
     @FormUrlEncoded
     @POST("app/busioper/dataOper")
-    Observable<String> getTransientStatePowerList(@Field("BUSI_NAME") String businame,@Field("secretKey") String secretKey,@Field("Ts") String ts);
+    Observable<String> getTransientStatePowerList(@Field("BUSI_NAME") String businame,@Field("secretKey") String secretKey,@Field("startTime") String startTime,@Field("endTime") String endTime);
     //暂态告警详情接口
     @FormUrlEncoded
     @POST("app/busioper/dataOper")
-    Observable<String> getTransientStateInfoList(@Field("BUSI_NAME") String businame,@Field("secretKey") String secretKey,@Field("stationName") String stationName,@Field("pageNum") int page,@Field("Type") String type);
+    Observable<String> getTransientStateInfoList(@Field("BUSI_NAME") String businame,@Field("secretKey") String secretKey,@Field("line_index") String stationName,@Field("gd_index") String gdName,@Field("page") int page,@Field("pageSize") int count,@Field("type")String type,@Field("startTime") String starttime,@Field("endTime") String endtime);
     //稳态告警接口
     @FormUrlEncoded
     @POST("app/busioper/dataOper")
@@ -41,7 +41,7 @@ public interface HttpPowerService {
     //稳态告警详情接口
     @FormUrlEncoded
     @POST("app/busioper/dataOper")
-    Observable<String> getSteadyStateInfoList(@Field("BUSI_NAME") String businame,@Field("secretKey") String secretKey,@Field("line_name") String stationName,@Field("page") int page,@Field("pageSize") int count,@Field("type")String type,@Field("startTime") String starttime,@Field("endTime") String endtime);
+    Observable<String> getSteadyStateInfoList(@Field("BUSI_NAME") String businame,@Field("secretKey") String secretKey,@Field("line_index") String stationName,@Field("page") int page,@Field("pageSize") int count,@Field("type")String type,@Field("startTime") String starttime,@Field("endTime") String endtime);
     //获取监测点名称及id
     @FormUrlEncoded
     @POST("app/busioper/dataOper")

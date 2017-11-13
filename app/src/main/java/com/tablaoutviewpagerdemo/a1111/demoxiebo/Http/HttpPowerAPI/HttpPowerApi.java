@@ -10,6 +10,7 @@ import com.wzgiceman.rxretrofitlibrary.retrofit_rx.listener.HttpOnNextSubListene
 
 import static android.R.attr.name;
 import static android.R.attr.type;
+import static com.tablaoutviewpagerdemo.a1111.demoxiebo.fragment.FragmentItem1Info.gdName;
 
 /**
  * Created by a1111 on 17/10/31.
@@ -60,7 +61,7 @@ public class HttpPowerApi extends HttpManagerApi {
         if(isFragment){
             doHttpDealForFragment(httpService.getLogin(busiName,name, password));
         }else {
-            doHttpDeal(httpService.getLogin(busiName,name, password));
+            doHttpDeal(httpService.getLogin(busiName,name, password),false);
         }
     }
 
@@ -72,7 +73,7 @@ public class HttpPowerApi extends HttpManagerApi {
         if(isFragment){
             doHttpDealForFragment(httpService.getStationList(busiName,secretKey,stationId,stationName,page,count));
         }else {
-            doHttpDeal(httpService.getStationList(busiName,secretKey,stationId,stationName,page,count));
+            doHttpDeal(httpService.getStationList(busiName,secretKey,stationId,stationName,page,count),true);
         }
     }
     public void getPowerList(boolean isFragment,String methodName,final String busiName,final String secretKey,final String starttime,final String endtime) {
@@ -83,7 +84,7 @@ public class HttpPowerApi extends HttpManagerApi {
         if(isFragment){
             doHttpDealForFragment(httpService.getPowerList(busiName,secretKey,starttime,endtime));
         }else {
-            doHttpDeal(httpService.getPowerList(busiName,secretKey,starttime,endtime));
+            doHttpDeal(httpService.getPowerList(busiName,secretKey,starttime,endtime),true);
         }
     }
     public void getSteadyStatePowerList(boolean isFragment,String methodName,final String busiName,final String secretKey,final String starttime,final String endtime) {
@@ -94,7 +95,7 @@ public class HttpPowerApi extends HttpManagerApi {
         if(isFragment){
             doHttpDealForFragment(httpService.getSteadyStatePowerList(busiName,secretKey,starttime,endtime));
         }else {
-            doHttpDeal(httpService.getSteadyStatePowerList(busiName,secretKey,starttime,endtime));
+            doHttpDeal(httpService.getSteadyStatePowerList(busiName,secretKey,starttime,endtime),true);
         }
     }
     public void getSteadyStateInfoList(boolean isFragment,String methodName,final String busiName,final String secretKey,final String stationName,final int page,final int conut ,final String type,final String startTime,final  String endTime) {
@@ -105,29 +106,29 @@ public class HttpPowerApi extends HttpManagerApi {
         if(isFragment){
             doHttpDealForFragment(httpService.getSteadyStateInfoList(busiName,secretKey,stationName,page,conut,type,startTime,endTime));
         }else {
-            doHttpDeal(httpService.getSteadyStateInfoList(busiName,secretKey,stationName,page,conut,type,startTime,endTime));
+            doHttpDeal(httpService.getSteadyStateInfoList(busiName,secretKey,stationName,page,conut,type,startTime,endTime),true);
         }
     }
-    public void getTransientStatePowerList(boolean isFragment,String methodName,final String busiName,final String secretKey,final String Ts) {
+    public void getTransientStatePowerList(boolean isFragment,String methodName,final String busiName,final String secretKey,final String st,final String et) {
         /*也可单独设置请求，会覆盖统一设置*/
         setCache(false);
         setMethod(methodName);
         HttpPowerService httpService = getRetrofit().create(HttpPowerService.class);
         if(isFragment){
-            doHttpDealForFragment(httpService.getTransientStatePowerList(busiName,secretKey,Ts));
+            doHttpDealForFragment(httpService.getTransientStatePowerList(busiName,secretKey,st,et));
         }else {
-            doHttpDeal(httpService.getTransientStatePowerList(busiName,secretKey,Ts));
+            doHttpDeal(httpService.getTransientStatePowerList(busiName,secretKey,st,et),true);
         }
     }
-    public void getTransientStateInfoList(boolean isFragment,String methodName,final String busiName,final String secretKey,final String stationName,int page,String type) {
+    public void getTransientStateInfoList(boolean isFragment,String methodName,final String busiName,final String secretKey,final String stationName,final String gdName ,int page,final int count,String type,String startTime,String endTime) {
         /*也可单独设置请求，会覆盖统一设置*/
         setCache(false);
         setMethod(methodName);
         HttpPowerService httpService = getRetrofit().create(HttpPowerService.class);
         if(isFragment){
-            doHttpDealForFragment(httpService.getTransientStateInfoList(busiName,secretKey,stationName,page,type));
+            doHttpDealForFragment(httpService.getTransientStateInfoList(busiName,secretKey,stationName,gdName,page,count,type,startTime,endTime));
         }else {
-            doHttpDeal(httpService.getTransientStateInfoList(busiName,secretKey,stationName,page,type));
+            doHttpDeal(httpService.getTransientStateInfoList(busiName,secretKey,stationName,gdName,page,count,type,startTime,endTime),true);
         }
     }
     public void getStationIdList(boolean isFragment,String methodName,final String busiName,final String secretKey) {
@@ -138,7 +139,7 @@ public class HttpPowerApi extends HttpManagerApi {
         if(isFragment){
             doHttpDealForFragment(httpService.getStationIdList(busiName,secretKey));
         }else {
-            doHttpDeal(httpService.getStationIdList(busiName,secretKey));
+            doHttpDeal(httpService.getStationIdList(busiName,secretKey),true);
         }
     }
 }

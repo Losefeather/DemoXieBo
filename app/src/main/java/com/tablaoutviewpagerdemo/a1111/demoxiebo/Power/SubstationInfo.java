@@ -53,10 +53,10 @@ public class SubstationInfo {
     @SerializedName("ZZXH")
     private String zhongduanxinghao;
     //在运，停运
-    @SerializedName("YXZT")
+    @SerializedName("M_STATUS")
     private String powerSataus;
     //正常，异常
-    @SerializedName("normalStatus")
+    @SerializedName("DE_ONLINE")
     private int PowerSatausInfo;
 
     public String getBiandianzhanmingcheng() {

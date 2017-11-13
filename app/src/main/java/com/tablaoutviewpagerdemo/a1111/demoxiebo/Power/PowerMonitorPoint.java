@@ -8,31 +8,31 @@ import com.google.gson.annotations.SerializedName;
 
 public class PowerMonitorPoint {
     //供电单位
-    @SerializedName("supplyUnit")
+    @SerializedName("gd_name")
     private String Gongdiandanwei;
     //电站名称
-    @SerializedName("stationName")
+    @SerializedName("sub_name")
     private String Dianzhanmingcheng;
     //母线名称
-    @SerializedName("busName")
+    @SerializedName("subv_name")
     private String Muxianmingcheng;
     //线路名称
-    @SerializedName("lineName")
+    @SerializedName("line_name")
     private String Xianlumingcheng;
     //事件类型
-    @SerializedName("eventType")
+    @SerializedName("type_name")
     private String Shijianleixing;
     //相别
-    @SerializedName("different")
+    @SerializedName("ccm_phasic_type")
     private String Xiangbie;
     //发生时间
-    @SerializedName("occurrenceTime")
+    @SerializedName("timeid")
     private String Fashengshijian;
     //残余电压
-    @SerializedName("residualVoltage")
+    @SerializedName("eventvaule")
     private String Canyudianya;
     //持续时间
-    @SerializedName("durationTime")
+    @SerializedName("persisttime")
     private String Chixushijian;
 
     @Override
