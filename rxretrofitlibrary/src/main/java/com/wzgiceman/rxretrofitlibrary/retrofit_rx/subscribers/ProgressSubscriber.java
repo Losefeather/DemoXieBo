@@ -21,6 +21,8 @@ import java.lang.ref.SoftReference;
 import rx.Observable;
 import rx.Subscriber;
 
+import static android.R.string.cancel;
+
 /**
  * 用于在Http请求开始时，自动显示一个ProgressDialog
  * 在Http请求结束是，关闭ProgressDialog
@@ -68,19 +70,37 @@ public class ProgressSubscriber<T> extends Subscriber<T> {
      * 初始化加载框
      */
     private void initProgressDialog(boolean cancel) {
-        Context context = mActivity.get();
-        if (pd == null && context != null) {
-            pd = new ProgressDialog(context);
-            pd.setCancelable(cancel);
-            if (cancel) {
-                pd.setOnCancelListener(new DialogInterface.OnCancelListener() {
-                    @Override
-                    public void onCancel(DialogInterface dialogInterface) {
-                        onCancelProgress();
-                    }
-                });
+        if(mActivity!=null){
+            Context context = mActivity.get();
+            if (pd == null && context != null) {
+                pd = new ProgressDialog(context);
+                pd.setCancelable(cancel);
+                if (cancel) {
+                    pd.setOnCancelListener(new DialogInterface.OnCancelListener() {
+                        @Override
+                        public void onCancel(DialogInterface dialogInterface) {
+                            onCancelProgress();
+                        }
+                    });
+                }
             }
         }
+        if(rxFragment!=null) {
+            Context context = rxFragment.get().getContext();
+            if (pd == null && context != null) {
+                pd = new ProgressDialog(context);
+                pd.setCancelable(cancel);
+                if (cancel) {
+                    pd.setOnCancelListener(new DialogInterface.OnCancelListener() {
+                        @Override
+                        public void onCancel(DialogInterface dialogInterface) {
+                            onCancelProgress();
+                        }
+                    });
+                }
+            }
+        }
+
     }
 
 
@@ -89,10 +109,19 @@ public class ProgressSubscriber<T> extends Subscriber<T> {
      */
     private void showProgressDialog() {
         if (!isShowPorgress()) return;
-        Context context = mActivity.get();
-        if (pd == null || context == null) return;
-        if (!pd.isShowing()) {
-            pd.show();
+        if(mActivity!=null) {
+            Context context = mActivity.get();
+            if (pd == null || context == null) return;
+            if (!pd.isShowing()) {
+                pd.show();
+            }
+        }
+        if(rxFragment!=null){
+            Context context = rxFragment.get().getContext();
+            if (pd == null || context == null) return;
+            if (!pd.isShowing()) {
+                pd.show();
+            }
         }
     }
 
@@ -230,8 +259,15 @@ public class ProgressSubscriber<T> extends Subscriber<T> {
      * @param e
      */
     private void errorDo(Throwable e) {
-        Context context = mActivity.get();
-        if (context == null) return;
+        if(mActivity!=null) {
+            Context context = mActivity.get();
+            if (context == null) return;
+        }
+        if(rxFragment!=null) {
+           Context context=rxFragment.get().getContext();
+            if (context == null) return;
+        }
+
         HttpOnNextListener httpOnNextListener = mSubscriberOnNextListener.get();
         if (httpOnNextListener == null) return;
         if (e instanceof ApiException) {

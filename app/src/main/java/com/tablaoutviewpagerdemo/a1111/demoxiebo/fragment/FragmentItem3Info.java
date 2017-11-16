@@ -21,6 +21,7 @@ import android.widget.SearchView;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.tablaoutviewpagerdemo.a1111.demoxiebo.Common.FuzzyQuery.SearchAdapter;
+import com.tablaoutviewpagerdemo.a1111.demoxiebo.Common.GetDateMethod.GetDateMethod;
 import com.tablaoutviewpagerdemo.a1111.demoxiebo.FeagmentActivity;
 import com.tablaoutviewpagerdemo.a1111.demoxiebo.FragmentFactory;
 import com.tablaoutviewpagerdemo.a1111.demoxiebo.Http.HttpPowerAPI.HttpPageCount;
@@ -127,7 +128,7 @@ public class FragmentItem3Info extends BaseRxFragment {
             stationName=getStationName(search.getText().toString());
         }
         Log.e(TAG,"stationName:"+stationName);
-        httpPowerApi.getSteadyStateInfoList(true, CommonPowerList.GET_STEADYSTATEINFOLIST,CommonPowerList.BUSI_WTGJXQ,CommonPowerList.sercetKey,stationName,page,count,type,"2017-06-15"+" 00:00:00","2017-06-15"+" 23:59:59");
+        httpPowerApi.getSteadyStateInfoList(true, CommonPowerList.GET_STEADYSTATEINFOLIST,CommonPowerList.BUSI_WTGJXQ,CommonPowerList.sercetKey,stationName,page,count,type, GetDateMethod.getCurrentDate()+" 00:00:00",GetDateMethod.getBeforHour());
 
     }
     private String getStationName(String name){
@@ -211,6 +212,14 @@ public class FragmentItem3Info extends BaseRxFragment {
     public void onError(ApiException e, String method) {
         Log.e(TAG,"method:"+method);
         Log.e(TAG,"ApiException:"+e.toString());
+        if(isRefresh){
+            srv.completeRefresh();
+        }else{
+            if(page>2){
+                page--;
+            }
+            srv.completeLoadMore();
+        }
         super.onError(e, method);
     }
 }

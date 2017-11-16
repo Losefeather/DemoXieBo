@@ -21,6 +21,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
+import com.tablaoutviewpagerdemo.a1111.demoxiebo.Common.GetDateMethod.GetDateMethod;
 import com.tablaoutviewpagerdemo.a1111.demoxiebo.FeagmentActivity;
 import com.tablaoutviewpagerdemo.a1111.demoxiebo.FragmentFactory;
 import com.tablaoutviewpagerdemo.a1111.demoxiebo.Http.HttpMessageEntity.BaseResultEntity;
@@ -104,7 +105,7 @@ public class FragmentItem1 extends BaseRxFragment {
         rcv.setLoadingListener(new SuperRecyclerView.LoadingListener() {
             @Override
             public void onRefresh() {
-                httpPowerApi.getTransientStatePowerList(true,CommonPowerList.GET_TRANSIENTSTATEPOWERLIST,CommonPowerList.BUSI_ZT,CommonPowerList.sercetKey,"2017-06-15"+" 00:00:00","2017-06-15"+" 23:59:59");
+                httpPowerApi.getTransientStatePowerList(true,CommonPowerList.GET_TRANSIENTSTATEPOWERLIST,CommonPowerList.BUSI_ZT,CommonPowerList.sercetKey, GetDateMethod.getCurrentDate()+" 00:00:00",GetDateMethod.getBeforHour());
             }
 
             @Override

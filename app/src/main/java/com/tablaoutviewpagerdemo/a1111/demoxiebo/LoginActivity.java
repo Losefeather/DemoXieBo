@@ -97,7 +97,7 @@ public class LoginActivity extends RxAppCompatActivity implements HttpOnNextList
         if(choseAutoLogin){
             autologin.setChecked(true);
             httpPowerApi.getLogin(false,CommonPowerList.GET_LONGIN,CommonPowerList.BUSI_LOGIN,name, MD5.md5(pass));
-            pb.show(this,"",getString(R.string.login_loading),true);
+            pb.show();
         }
 
         login.setOnClickListener(new View.OnClickListener() {
@@ -108,7 +108,7 @@ public class LoginActivity extends RxAppCompatActivity implements HttpOnNextList
                 userNameValue = username.getText().toString();
                 passwordValue = userpassword.getText().toString();
                 httpPowerApi.getLogin(false, CommonPowerList.GET_LONGIN, CommonPowerList.BUSI_LOGIN,userNameValue, MD5.md5(passwordValue));
-                pb.show(getApplicationContext(),"",getString(R.string.login_loading),true);
+                pb.show();
             }
         });
 
@@ -133,6 +133,7 @@ public class LoginActivity extends RxAppCompatActivity implements HttpOnNextList
         Log.e(TAG,"next:"+method);
         if(method.equals(CommonPowerList.GET_LONGIN)){
             saveUserInfo(getApplicationContext(),username.getText().toString(),userpassword.getText().toString(),remember.isChecked(),autologin.isChecked());
+
             //2.获取字典
             httpPowerApi.getStationIdList(false,CommonPowerList.GET_STSTIONINFOLIST,CommonPowerList.BUSI_JCDLB,CommonPowerList.sercetKey);
         }
@@ -160,7 +161,7 @@ public class LoginActivity extends RxAppCompatActivity implements HttpOnNextList
 
             CommonPowerList.substationInfoArrayList=substationInfoArrayList;
             //4.获取指标概览
-            httpPowerApi.getPowerList(false,CommonPowerList.GET_POWERLIST,CommonPowerList.BUSI_ZBGL,CommonPowerList.sercetKey,"2017-06-15"+" 00:00:00","2017-06-15"+" 23:59:59");
+            httpPowerApi.getPowerList(false,CommonPowerList.GET_POWERLIST,CommonPowerList.BUSI_ZBGL,CommonPowerList.sercetKey,GetDateMethod.getBeforDate()+" 00:00:00",GetDateMethod.getBeforDate()+" 23:59:59");
 
         }
         if(method.equals(CommonPowerList.GET_POWERLIST)){
@@ -173,7 +174,7 @@ public class LoginActivity extends RxAppCompatActivity implements HttpOnNextList
             }
             CommonPowerList.areaTotalArrayList=areaTotalArrayList;
             //5.获取稳态告警
-            httpPowerApi.getSteadyStatePowerList(false,CommonPowerList.GET_STEADYSTATEPOWERLIST,CommonPowerList.BUSI_WTGJ,CommonPowerList.sercetKey,"2017-06-15"+" 00:00:00","2017-06-15"+" 23:59:59");
+            httpPowerApi.getSteadyStatePowerList(false,CommonPowerList.GET_STEADYSTATEPOWERLIST,CommonPowerList.BUSI_WTGJ,CommonPowerList.sercetKey,GetDateMethod.getCurrentDate()+" 00:00:00",GetDateMethod.getCurrentDateInfo());
 
         }
         if(method.equals(CommonPowerList.GET_STEADYSTATEPOWERLIST)){
@@ -186,7 +187,7 @@ public class LoginActivity extends RxAppCompatActivity implements HttpOnNextList
             }
             CommonPowerList.steadyStatePowerArrayList=steadyStatePowerArrayList;
             //6.获取暂态告警
-            httpPowerApi.getTransientStatePowerList(false,CommonPowerList.GET_TRANSIENTSTATEPOWERLIST,CommonPowerList.BUSI_ZT,CommonPowerList.sercetKey,"2017-06-15"+" 00:00:00","2017-06-15"+" 23:59:59");
+            httpPowerApi.getTransientStatePowerList(false,CommonPowerList.GET_TRANSIENTSTATEPOWERLIST,CommonPowerList.BUSI_ZT,CommonPowerList.sercetKey,GetDateMethod.getCurrentDate()+" 00:00:00",GetDateMethod.getBeforHour());
            }
            if(method.equals(CommonPowerList.GET_TRANSIENTSTATEPOWERLIST)){
                Gson gson = new Gson();
@@ -213,16 +214,16 @@ public class LoginActivity extends RxAppCompatActivity implements HttpOnNextList
             pb.dismiss();
         }
         if(method.equals(CommonPowerList.GET_STSATIONLIST)){
-            httpPowerApi.getPowerList(false,CommonPowerList.GET_POWERLIST,CommonPowerList.BUSI_ZBGL,CommonPowerList.sercetKey,"2017-06-15"+" 00:00:00","2017-06-15"+" 23:59:59");
+            httpPowerApi.getPowerList(false,CommonPowerList.GET_POWERLIST,CommonPowerList.BUSI_ZBGL,CommonPowerList.sercetKey,GetDateMethod.getBeforDate()+" 00:00:00",GetDateMethod.getBeforDate()+" 23:59:59");
         }
         if(method.equals(CommonPowerList.GET_STSTIONINFOLIST)){
-            httpPowerApi.getStationList(true,CommonPowerList.GET_STSATIONLIST,CommonPowerList.BUSI_JCDZL,CommonPowerList.sercetKey,"","",1,10);
+            httpPowerApi.getStationList(false,CommonPowerList.GET_STSATIONLIST,CommonPowerList.BUSI_JCDZL,CommonPowerList.sercetKey,"","",1,10);
         }
         if(method.equals(CommonPowerList.GET_POWERLIST)){
-            httpPowerApi.getSteadyStatePowerList(false,CommonPowerList.GET_STEADYSTATEPOWERLIST,CommonPowerList.BUSI_WTGJ,CommonPowerList.sercetKey,"2017-06-15"+" 00:00:00","2017-06-15"+" 23:59:59");
+            httpPowerApi.getSteadyStatePowerList(false,CommonPowerList.GET_STEADYSTATEPOWERLIST,CommonPowerList.BUSI_WTGJ,CommonPowerList.sercetKey,GetDateMethod.getCurrentDate()+" 00:00:00",GetDateMethod.getCurrentDateInfo());
         }
         if(method.equals(CommonPowerList.GET_STEADYSTATEPOWERLIST)){
-            httpPowerApi.getTransientStatePowerList(false,CommonPowerList.GET_TRANSIENTSTATEPOWERLIST,CommonPowerList.BUSI_ZT,CommonPowerList.sercetKey,"2017-06-15"+" 00:00:00","2017-06-15"+" 23:59:59");
+            httpPowerApi.getTransientStatePowerList(false,CommonPowerList.GET_TRANSIENTSTATEPOWERLIST,CommonPowerList.BUSI_ZT,CommonPowerList.sercetKey,GetDateMethod.getCurrentDate()+" 00:00:00",GetDateMethod.getBeforHour());
         }
         if(method.equals(CommonPowerList.GET_TRANSIENTSTATEPOWERLIST)) {
             Intent intent =new Intent(LoginActivity.this,FeagmentActivity.class);

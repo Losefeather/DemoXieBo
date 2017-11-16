@@ -14,6 +14,7 @@ import android.view.ViewGroup;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.tablaoutviewpagerdemo.a1111.demoxiebo.Common.GetDateMethod.GetDateMethod;
 import com.tablaoutviewpagerdemo.a1111.demoxiebo.FeagmentActivity;
 import com.tablaoutviewpagerdemo.a1111.demoxiebo.FragmentFactory;
 import com.tablaoutviewpagerdemo.a1111.demoxiebo.Http.HttpPowerAPI.HttpPowerApi;
@@ -43,7 +44,6 @@ import static com.tablaoutviewpagerdemo.a1111.demoxiebo.Power.CommonPowerList.ar
 /**
  * Created by a1111 on 17/9/30.
  */
-
 public class FragmentItem4 extends BaseRxFragment {
     public static String TAG="FragmentItem4";
     private View view;
@@ -72,7 +72,7 @@ public class FragmentItem4 extends BaseRxFragment {
         rcv.setLoadingListener(new SuperRecyclerView.LoadingListener() {
             @Override
             public void onRefresh() {
-                httpPowerApi.getPowerList(true,CommonPowerList.GET_POWERLIST,CommonPowerList.BUSI_ZBGL,CommonPowerList.sercetKey,"2017-06-15"+" 00:00:00","2017-06-15"+" 23:59:59");
+                httpPowerApi.getPowerList(true,CommonPowerList.GET_POWERLIST,CommonPowerList.BUSI_ZBGL,CommonPowerList.sercetKey, GetDateMethod.getBeforDate()+" 00:00:00",GetDateMethod.getBeforDate()+" 23:59:59");
             }
 
             @Override
@@ -83,18 +83,9 @@ public class FragmentItem4 extends BaseRxFragment {
         rcv.setRefreshProgressStyle(ProgressStyle.BallSpinFadeLoader);//下拉刷新的样式
         rcv.setLoadingMoreProgressStyle(ProgressStyle.BallClipRotate);//上拉加载的样式
         rcv.setArrowImageView(R.mipmap.ic_pulltorefresh_arrow);//设置下拉箭头
-
-
         return view;
     }
 
-    private void reFreshData(){
-
-
-        srva.notifyDataSetChanged();
-
-        rcv.completeRefresh();
-    }
 
     @Override
     public void onNext(String resulte, String method) {

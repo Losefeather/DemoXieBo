@@ -76,10 +76,9 @@ public class FragmentItem2 extends BaseRxFragment{
     private int totalPage=100;
     private int page=1;
     private int count=13;
-    private HttpPowerApi httpPowerApi;
+    private HttpPowerApi httpPowerApi= new HttpPowerApi(this,this);;
     private boolean isRefresh=false;
-    private String stationId="";
-    private String[] str ={"123"};
+    private String[] str =new String[]{"天津","天津"};
     private SuperRecyclerViewAdapter2 superRecyclerViewAdapter2;
     @Override
     public View onCreateView(LayoutInflater inflater,  ViewGroup container, Bundle savedInstanceState) {
@@ -89,7 +88,6 @@ public class FragmentItem2 extends BaseRxFragment{
         if(CommonPowerList.substationInfoArrayList.size()>0){
             powerList=CommonPowerList.substationInfoArrayList;
         }
-        httpPowerApi = new HttpPowerApi(this,this);
         view = inflater.inflate(R.layout.fragment_item2,container,false);
         srv=view.findViewById(R.id.srv_item2);
         search=view.findViewById(R.id.search);
@@ -128,7 +126,8 @@ public class FragmentItem2 extends BaseRxFragment{
             }
              return stringArrayList.toArray(str);
         }else{
-           return stringArrayList.toArray(str);
+
+           return str;
         }
 
     }

@@ -20,6 +20,7 @@ import android.widget.Spinner;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.tablaoutviewpagerdemo.a1111.demoxiebo.Common.GetDateMethod.GetDateMethod;
 import com.tablaoutviewpagerdemo.a1111.demoxiebo.FeagmentActivity;
 import com.tablaoutviewpagerdemo.a1111.demoxiebo.FragmentFactory;
 import com.tablaoutviewpagerdemo.a1111.demoxiebo.Http.HttpPowerAPI.HttpPowerApi;
@@ -123,7 +124,7 @@ public class FragmentItem3 extends BaseRxFragment implements HttpOnNextListener 
         rcvItem3.setLoadingListener(new SuperRecyclerView.LoadingListener() {
             @Override
             public void onRefresh() {
-                httpPowerApi.getSteadyStatePowerList(true, CommonPowerList.GET_STEADYSTATEPOWERLIST, CommonPowerList.BUSI_WTGJ, CommonPowerList.sercetKey, "2017-06-15" + " 00:00:00", "2017-06-15" + " 23:59:59");
+                httpPowerApi.getSteadyStatePowerList(true, CommonPowerList.GET_STEADYSTATEPOWERLIST, CommonPowerList.BUSI_WTGJ, CommonPowerList.sercetKey, GetDateMethod.getCurrentDate()+" 00:00:00",GetDateMethod.getCurrentDateInfo());
             }
 
             @Override
