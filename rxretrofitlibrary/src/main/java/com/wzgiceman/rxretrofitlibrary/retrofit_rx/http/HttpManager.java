@@ -1,6 +1,6 @@
 package com.wzgiceman.rxretrofitlibrary.retrofit_rx.http;
 
-import android.support.v4.app.FragmentActivity;
+
 import android.util.Log;
 
 import com.trello.rxlifecycle.android.ActivityEvent;
@@ -15,6 +15,7 @@ import com.wzgiceman.rxretrofitlibrary.retrofit_rx.http.func.ExceptionFunc;
 import com.wzgiceman.rxretrofitlibrary.retrofit_rx.http.func.ResulteFunc;
 import com.wzgiceman.rxretrofitlibrary.retrofit_rx.listener.HttpOnNextListener;
 import com.wzgiceman.rxretrofitlibrary.retrofit_rx.listener.HttpOnNextSubListener;
+import com.wzgiceman.rxretrofitlibrary.retrofit_rx.subscribers.BackGroundSubscriber;
 import com.wzgiceman.rxretrofitlibrary.retrofit_rx.subscribers.ProgressSubscriber;
 
 import java.lang.ref.SoftReference;
@@ -67,6 +68,12 @@ public class HttpManager {
         this.onNextSubListener = new SoftReference(onNextSubListener);
         this.fragment = new SoftReference(fragment);
     }
+    public HttpManager(HttpOnNextSubListener onNextSubListener){
+        this.onNextSubListener = new SoftReference(onNextSubListener);
+    }
+    public HttpManager(HttpOnNextListener onNextListener) {
+        this.onNextListener = new SoftReference(onNextListener);
+    }
     /**
      * 处理http请求
      *
@@ -92,7 +99,6 @@ public class HttpManager {
         if (RxRetrofitApp.isDebug()) {
             builder.addInterceptor(getHttpLoggingInterceptor());
         }
-
         /*创建retrofit对象*/
         final Retrofit retrofit = new Retrofit.Builder()
                 .client(builder.build())
@@ -102,7 +108,35 @@ public class HttpManager {
                 .build();
         return retrofit;
     }
+    public void httpDealForBackground(Observable observable, BaseApi basePar){
+          /*失败后的retry配置*/
+        observable = observable.retryWhen(new RetryWhenNetworkException(basePar.getRetryCount(),
+                basePar.getRetryDelay(), basePar.getRetryIncreaseDelay()))
+                /*异常处理*/
+                .onErrorResumeNext(new ExceptionFunc())
+                /*生命周期管理*/
+                //.compose(appCompatActivity.get().bindToLifecycle())
+                //Note:手动设置在activity onDestroy的时候取消订阅
+                //.compose(appCompatActivity.get().bindUntilEvent(ActivityEvent.DESTROY))
+                /*返回数据统一判断*/
+                .map(new ResulteFunc())
+                /*http请求线程*/
+                .subscribeOn(Schedulers.io())
+                .unsubscribeOn(Schedulers.io())
+                /*回调线程*/
+                .observeOn(AndroidSchedulers.mainThread());
 
+        /*ober回调，链接式返回*/
+        if (onNextSubListener != null && null != onNextSubListener.get()) {
+            onNextSubListener.get().onNext(observable, basePar.getMethod());
+        }
+        /*数据String回调*/
+        if (onNextListener != null && null != onNextListener.get()) {
+            BackGroundSubscriber subscriber = new BackGroundSubscriber(basePar,onNextListener);
+            subscriber.setMethodName(basePar.getMethod());
+            observable.subscribe(subscriber);
+        }
+    }
     /**
      * RxRetrofit处理
      *
@@ -135,6 +169,7 @@ public class HttpManager {
         /*数据String回调*/
         if (onNextListener != null && null != onNextListener.get()) {
             ProgressSubscriber subscriber = new ProgressSubscriber(basePar, onNextListener, appCompatActivity,null);
+            subscriber.setMethodName(basePar.getMethod());
             observable.subscribe(subscriber);
         }
     }
@@ -172,6 +207,7 @@ public class HttpManager {
         /*数据String回调*/
         if (onNextListener != null && null != onNextListener.get()) {
             ProgressSubscriber subscriber = new ProgressSubscriber(basePar, onNextListener, fragmentActivity,null);
+            subscriber.setMethodName(basePar.getMethod());
             observable.subscribe(subscriber);
         }
     }
@@ -208,6 +244,7 @@ public class HttpManager {
         /*数据String回调*/
         if (onNextListener != null && null != onNextListener.get()) {
             ProgressSubscriber subscriber= new ProgressSubscriber(basePar,onNextListener,null,fragment);
+            subscriber.setMethodName(basePar.getMethod());
             observable.subscribe(subscriber);
         }
     }

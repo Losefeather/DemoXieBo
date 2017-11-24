@@ -22,6 +22,7 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.tablaoutviewpagerdemo.a1111.demoxiebo.Common.FuzzyQuery.SearchAdapter;
 import com.tablaoutviewpagerdemo.a1111.demoxiebo.Common.GetDateMethod.GetDateMethod;
+import com.tablaoutviewpagerdemo.a1111.demoxiebo.Common.MD5.SecretUtils;
 import com.tablaoutviewpagerdemo.a1111.demoxiebo.FeagmentActivity;
 import com.tablaoutviewpagerdemo.a1111.demoxiebo.FragmentFactory;
 import com.tablaoutviewpagerdemo.a1111.demoxiebo.Http.HttpPowerAPI.HttpPageCount;
@@ -128,8 +129,8 @@ public class FragmentItem3Info extends BaseRxFragment {
             stationName=getStationName(search.getText().toString());
         }
         Log.e(TAG,"stationName:"+stationName);
-        httpPowerApi.getSteadyStateInfoList(true, CommonPowerList.GET_STEADYSTATEINFOLIST,CommonPowerList.BUSI_WTGJXQ,CommonPowerList.sercetKey,stationName,page,count,type, GetDateMethod.getCurrentDate()+" 00:00:00",GetDateMethod.getBeforHour());
-
+       // httpPowerApi.getSteadyStateInfoList(CommonPowerList.isFragment, CommonPowerList.GET_STEADYSTATEINFOLIST,CommonPowerList.BUSI_WTGJXQ,CommonPowerList.sercetKey,stationName,page,count,type, GetDateMethod.getCurrentDate()+" 00:00:00",GetDateMethod.getBeforHour());
+        httpPowerApi.getObj(CommonPowerList.isFragment, CommonPowerList.GET_STEADYSTATEINFOLIST, SecretUtils.encrypt(httpPowerApi.getSteadyStateInfoList(CommonPowerList.BUSI_WTGJXQ,stationName,page,count,type, GetDateMethod.getCurrentDate()+" 00:00:00",GetDateMethod.getBeforHour())));
     }
     private String getStationName(String name){
         String id="";

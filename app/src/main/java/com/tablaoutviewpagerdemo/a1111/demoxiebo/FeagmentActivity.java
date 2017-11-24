@@ -13,7 +13,11 @@ import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import com.tablaoutviewpagerdemo.a1111.demoxiebo.Common.ActivityManager;
+import com.tablaoutviewpagerdemo.a1111.demoxiebo.Common.MD5.MD5;
+import com.tablaoutviewpagerdemo.a1111.demoxiebo.Common.MD5.SecretUtils;
 import com.tablaoutviewpagerdemo.a1111.demoxiebo.Common.SysApplication;
+import com.tablaoutviewpagerdemo.a1111.demoxiebo.Http.HttpPowerAPI.HttpPowerApi;
+import com.tablaoutviewpagerdemo.a1111.demoxiebo.Power.CommonPowerList;
 import com.tablaoutviewpagerdemo.a1111.demoxiebo.fragment.FragmentItem1;
 import com.tablaoutviewpagerdemo.a1111.demoxiebo.fragment.FragmentItem1Info;
 import com.tablaoutviewpagerdemo.a1111.demoxiebo.fragment.FragmentItem2;
@@ -26,18 +30,26 @@ import com.tablaoutviewpagerdemo.a1111.demoxiebo.ui.CircleImageView.CircleImageV
 import com.tablaoutviewpagerdemo.a1111.demoxiebo.ui.CustomDialog.CustomDialog;
 import com.tablaoutviewpagerdemo.a1111.demoxiebo.ui.KyDialog.KyDialogBuilder;
 import com.trello.rxlifecycle.components.support.RxFragmentActivity;
+import com.wzgiceman.rxretrofitlibrary.retrofit_rx.exception.ApiException;
+import com.wzgiceman.rxretrofitlibrary.retrofit_rx.listener.HttpOnNextListener;
+
+import static org.greenrobot.greendao.DaoLog.e;
 
 /**
  * Creed by a1111 on 17/9/28.
  */
 
 public class FeagmentActivity extends RxFragmentActivity {
-    public  final String TAG = " FeagmentActivity";
+    public  final String TAG ="FeagmentActivity";
     public static int Num=0;
     private TextView tv1,tv2,tv3,tv4,tv_title;
     private CircleImageView civ;
     private FrameLayout fl;
     private static Button bt_back;
+    public FeagmentActivity() {
+        super();
+    }
+
     @Override
     protected void onCreate( Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -191,7 +203,6 @@ public class FeagmentActivity extends RxFragmentActivity {
 //                builder.setPositivePressedTextColor(0xFF48CE3A);//设置确认按钮，当手指按下时的字体颜色
 //                builder.setBackgroundAlpha(160);//对话框外区域的透明度
 //                builder.show();//打开对话框
-//                Log.e(TAG,"chuxianle");
             }else if(FragmentFactory.currentFragment.equals(FragmentItem1Info.TAG)){
                 goBack();
             }else if(FragmentFactory.currentFragment.equals(FragmentItem2Info.TAG)){
@@ -204,4 +215,6 @@ public class FeagmentActivity extends RxFragmentActivity {
         }
         return super.onKeyDown(keyCode, event);
     }
+
+
 }

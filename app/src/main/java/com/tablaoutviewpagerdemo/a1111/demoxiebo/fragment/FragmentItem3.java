@@ -21,6 +21,7 @@ import android.widget.Spinner;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.tablaoutviewpagerdemo.a1111.demoxiebo.Common.GetDateMethod.GetDateMethod;
+import com.tablaoutviewpagerdemo.a1111.demoxiebo.Common.MD5.SecretUtils;
 import com.tablaoutviewpagerdemo.a1111.demoxiebo.FeagmentActivity;
 import com.tablaoutviewpagerdemo.a1111.demoxiebo.FragmentFactory;
 import com.tablaoutviewpagerdemo.a1111.demoxiebo.Http.HttpPowerAPI.HttpPowerApi;
@@ -48,6 +49,7 @@ import superlibrary.recycleview.SuperRecyclerView;
 
 
 import static com.tablaoutviewpagerdemo.a1111.demoxiebo.FeagmentActivity.setButton;
+import static com.tablaoutviewpagerdemo.a1111.demoxiebo.Power.CommonPowerList.isFirstIntoFragment3;
 import static com.tablaoutviewpagerdemo.a1111.demoxiebo.Power.CommonPowerList.steadyStatePowerArrayList;
 
 /**
@@ -56,9 +58,7 @@ import static com.tablaoutviewpagerdemo.a1111.demoxiebo.Power.CommonPowerList.st
 
 public class FragmentItem3 extends BaseRxFragment implements HttpOnNextListener {
     public static String TAG = "FragmentItem3";
-    @Bind(R.id.sp_item3)
     Spinner spItem3;
-    @Bind(R.id.rcv_item3)
     SuperRecyclerView rcvItem3;
     private View view;
     private SuperRecyclerViewCAdapter srva;
@@ -67,7 +67,7 @@ public class FragmentItem3 extends BaseRxFragment implements HttpOnNextListener 
     private String[] ss;
     private boolean isUp = true;
     private ArrayAdapter<String> spinnerAdapter;
-    private HttpPowerApi httpPowerApi;
+    private HttpPowerApi httpPowerApi=new HttpPowerApi(this, this);
 
     @Nullable
     @Override
@@ -75,13 +75,14 @@ public class FragmentItem3 extends BaseRxFragment implements HttpOnNextListener 
         Log.e(TAG,"init---------"+TAG);
         FeagmentActivity.Num = 0;
         setButton();
-        ButterKnife.bind(this.getActivity());
+        if(isFirstIntoFragment3){
+            httpPowerApi.getObj(CommonPowerList.isFragment, CommonPowerList.GET_STEADYSTATEPOWERLIST, SecretUtils.encrypt(httpPowerApi.getSteadyStatePowerList(CommonPowerList.BUSI_WTGJ,GetDateMethod.getCurrentDate()+" 00:00:00",GetDateMethod.getCurrentDateInfo())));
+        }
         ss = new String[]{getString(R.string.pinpvpiancha), getString(R.string.dianyapiancha), getString(R.string.dianyabupinghengdu), getString(R.string.shanbian), getString(R.string.dianyaxiebojibianlv),
                 getString(R.string.dianyaxiebohanyoulv), getString(R.string.dianliuxiebohanyoulv)};
         view = inflater.inflate(R.layout.fragment_item3, container, false);
         rcvItem3 = view.findViewById(R.id.rcv_item3);
         spItem3 = view.findViewById(R.id.sp_item3);
-        httpPowerApi = new HttpPowerApi(this, this);
         if (steadyStatePowerArrayList.size() > 0) {
             steadyStatePowerList = steadyStatePowerArrayList;
             powerList = doWithList(steadyStatePowerList);
@@ -124,7 +125,8 @@ public class FragmentItem3 extends BaseRxFragment implements HttpOnNextListener 
         rcvItem3.setLoadingListener(new SuperRecyclerView.LoadingListener() {
             @Override
             public void onRefresh() {
-                httpPowerApi.getSteadyStatePowerList(true, CommonPowerList.GET_STEADYSTATEPOWERLIST, CommonPowerList.BUSI_WTGJ, CommonPowerList.sercetKey, GetDateMethod.getCurrentDate()+" 00:00:00",GetDateMethod.getCurrentDateInfo());
+                //httpPowerApi.getSteadyStatePowerList(CommonPowerList.isFragment, CommonPowerList.GET_STEADYSTATEPOWERLIST, CommonPowerList.BUSI_WTGJ, CommonPowerList.sercetKey, GetDateMethod.getCurrentDate()+" 00:00:00",GetDateMethod.getCurrentDateInfo());
+                httpPowerApi.getObj(CommonPowerList.isFragment, CommonPowerList.GET_STEADYSTATEPOWERLIST, SecretUtils.encrypt(httpPowerApi.getSteadyStatePowerList(CommonPowerList.BUSI_WTGJ,GetDateMethod.getCurrentDate()+" 00:00:00",GetDateMethod.getCurrentDateInfo())));
             }
 
             @Override
@@ -187,7 +189,6 @@ public class FragmentItem3 extends BaseRxFragment implements HttpOnNextListener 
         return powerList;
     }
 
-
     public void initData(boolean isUp,List<Item> powerList) {
         CollectionsList(powerList, isUp);
     }
@@ -228,13 +229,11 @@ public class FragmentItem3 extends BaseRxFragment implements HttpOnNextListener 
 
     @Override
     public void onDestroyView() {
-        ButterKnife.unbind(this.getActivity());
         CommonPowerList.steadyStatePowerArrayList=steadyStatePowerList;
         super.onDestroyView();
     }
 
     private void reFreash(boolean isUp,List<Item> powerList) {
-
         CollectionsList(powerList, isUp);
         srva.notifyDataSetChanged();
         rcvItem3.completeRefresh();
@@ -242,21 +241,32 @@ public class FragmentItem3 extends BaseRxFragment implements HttpOnNextListener 
 
     @Override
     public void onNext(String resulte, String method) {
-        steadyStatePowerArrayList.clear();
-        powerList.clear();
-        Gson gson = new Gson();
-        Type type = new TypeToken<PowerResultEntity<List<SteadyStatePower>>>(){}.getType();
-        PowerResultEntity<List<SteadyStatePower>> baseInfo=gson.fromJson(resulte,type);
-        for(int i=0;i<baseInfo.getData().size();i++) {
-            steadyStatePowerArrayList.add(baseInfo.getData().get(i));
+        if(method.equals(CommonPowerList.GET_STEADYSTATEPOWERLIST)) {
+            if(isFirstIntoFragment3){
+                isFirstIntoFragment3=false;
+            }
+            steadyStatePowerArrayList.clear();
+            powerList.clear();
+            Gson gson = new Gson();
+            Type type = new TypeToken<PowerResultEntity<List<SteadyStatePower>>>() {
+            }.getType();
+            PowerResultEntity<List<SteadyStatePower>> baseInfo = gson.fromJson(resulte, type);
+            for (int i = 0; i < baseInfo.getData().size(); i++) {
+                steadyStatePowerArrayList.add(baseInfo.getData().get(i));
+            }
+            powerList = doWithList(steadyStatePowerArrayList);
+            reFreash(isUp, powerList);
         }
-        powerList=doWithList(steadyStatePowerArrayList);
-        reFreash(isUp,powerList);
         super.onNext(resulte, method);
     }
 
     @Override
     public void onError(ApiException e, String method) {
+        if(method.equals(CommonPowerList.GET_STEADYSTATEPOWERLIST)) {
+            if (isFirstIntoFragment3) {
+                isFirstIntoFragment3 = false;
+            }
+        }
         super.onError(e, method);
     }
 

@@ -10,7 +10,7 @@ import com.wzgiceman.rxretrofitlibrary.retrofit_rx.listener.HttpOnNextListener;
  */
 
 public class BaseRxFragment extends RxFragment implements HttpOnNextListener{
-    //public HttpPowerApi powerApi= new HttpPowerApi(this,this);
+
     @Override
     public void onNext(String resulte, String method) {
 

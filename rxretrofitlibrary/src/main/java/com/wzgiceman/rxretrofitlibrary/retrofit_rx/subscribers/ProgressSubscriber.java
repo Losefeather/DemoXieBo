@@ -43,7 +43,7 @@ public class ProgressSubscriber<T> extends Subscriber<T> {
     /*请求数据*/
     private BaseApi api;
 
-
+    private String methodName;
 
     public  ProgressSubscriber(BaseApi api, SoftReference<HttpOnNextListener> listenerSoftReference, SoftReference<Context> mActivity,SoftReference<RxFragment> rxFragment) {
         this.api = api;
@@ -303,7 +303,8 @@ public class ProgressSubscriber<T> extends Subscriber<T> {
             }
         }
         if (mSubscriberOnNextListener.get() != null) {
-            mSubscriberOnNextListener.get().onNext((String) t, api.getMethod());
+            //mSubscriberOnNextListener.get().onNext((String) t, api.getMethod());
+            mSubscriberOnNextListener.get().onNext((String) t, this.getMethodName());
         }
     }
 
@@ -330,5 +331,13 @@ public class ProgressSubscriber<T> extends Subscriber<T> {
      */
     public void setShowPorgress(boolean showPorgress) {
         this.showPorgress = showPorgress;
+    }
+
+    public String getMethodName() {
+        return methodName;
+    }
+
+    public void setMethodName(String methodName) {
+        this.methodName = methodName;
     }
 }

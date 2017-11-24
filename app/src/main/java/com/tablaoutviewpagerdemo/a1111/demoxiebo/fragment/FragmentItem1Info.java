@@ -18,6 +18,7 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.tablaoutviewpagerdemo.a1111.demoxiebo.Common.FuzzyQuery.SearchAdapter;
 import com.tablaoutviewpagerdemo.a1111.demoxiebo.Common.GetDateMethod.GetDateMethod;
+import com.tablaoutviewpagerdemo.a1111.demoxiebo.Common.MD5.SecretUtils;
 import com.tablaoutviewpagerdemo.a1111.demoxiebo.FeagmentActivity;
 import com.tablaoutviewpagerdemo.a1111.demoxiebo.Http.HttpPowerAPI.HttpPageCount;
 import com.tablaoutviewpagerdemo.a1111.demoxiebo.Http.HttpPowerAPI.HttpPowerApi;
@@ -111,8 +112,8 @@ public class FragmentItem1Info extends BaseRxFragment  {
         Log.e(TAG,"stationName"+stationName);
         Log.e(TAG,"gdName"+FragmentItem1Info.gdName);
         Log.e(TAG,"key"+FragmentItem1Info.key);
-        httpPowerApi.getTransientStateInfoList(true,CommonPowerList.GET_TRANSIENTSTATEINFOLIST,CommonPowerList.BUSI_ZTXQ,CommonPowerList.sercetKey,stationName,FragmentItem1Info.gdName,page,count,FragmentItem1Info.key, GetDateMethod.getCurrentDate()+" 00:00:00",GetDateMethod.getBeforHour());
-
+        //httpPowerApi.getTransientStateInfoList(CommonPowerList.isFragment,CommonPowerList.GET_TRANSIENTSTATEINFOLIST,CommonPowerList.BUSI_ZTXQ,CommonPowerList.sercetKey,stationName,FragmentItem1Info.gdName,page,count,FragmentItem1Info.key, GetDateMethod.getCurrentDate()+" 00:00:00",GetDateMethod.getBeforHour());
+        httpPowerApi.getObj(CommonPowerList.isFragment,CommonPowerList.GET_TRANSIENTSTATEINFOLIST, SecretUtils.encrypt(httpPowerApi.getTransientStateInfoList(CommonPowerList.BUSI_ZTXQ,stationName,FragmentItem1Info.gdName,page,count,FragmentItem1Info.key, GetDateMethod.getCurrentDate()+" 00:00:00",GetDateMethod.getBeforHour())));
     }
     private String getStationName(String name){
         String id="";

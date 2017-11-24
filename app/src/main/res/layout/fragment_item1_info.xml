@@ -33,7 +33,7 @@
             android:completionThreshold="1"
             android:hint="@string/jiancedianchaxun"
             android:imeOptions="actionSearch"
-            android:maxLength="12"
+            android:maxLength="40"
             android:dropDownHeight="200dp"
             android:dropDownWidth="180dp"
             android:textColor="#317F6D"

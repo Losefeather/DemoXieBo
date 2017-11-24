@@ -15,5 +15,5 @@ public class powerHttpStausCode {
     public static String REUTRN_CLIENT_ERROR="98";
     public static String REUTRN_IO_ERROR="99";
     public static String RETURN_SUCCESS_CODE="SUCCESS";
-    public static String RETURN_FAIL_CODE="FAILED";
+    public static String RETURN_FAIL_CODE="FAIL";
 }

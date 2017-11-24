@@ -20,7 +20,6 @@ public class HttpManagerApi extends BaseApi {
     public HttpManagerApi(HttpOnNextListener onNextListener, RxAppCompatActivity appCompatActivity) {
         manager = new HttpManager(onNextListener, appCompatActivity);
     }
-
     public HttpManagerApi(HttpOnNextSubListener onNextSubListener, RxAppCompatActivity appCompatActivity) {
         manager = new HttpManager(onNextSubListener, appCompatActivity);
     }
@@ -38,21 +37,27 @@ public class HttpManagerApi extends BaseApi {
     public HttpManagerApi(HttpOnNextSubListener onNextSubListener, RxFragment fragment) {
         manager = new HttpManager(onNextSubListener, fragment);
     }
+    public HttpManagerApi(HttpOnNextSubListener onNextSubListener) {
+        manager = new HttpManager(onNextSubListener);
+    }
+    public HttpManagerApi(HttpOnNextListener onNextListener) {
+        manager = new HttpManager(onNextListener);
+    }
     protected Retrofit getRetrofit() {
         return  manager.getReTrofit(getConnectionTime(), getBaseUrl());
     }
-
-
     protected void doHttpDeal(Observable observable,boolean setShowprogess) {
         this.setShowProgress(false);
-        manager.httpDeal(observable, this);
+        manager.httpDeal(observable,this);
     }
     protected void doHttpDealForFragmentActivity(Observable observable) {
-        manager.httpDealForFragmentActivity(observable, this);
+        manager.httpDealForFragmentActivity(observable,this);
     }
     protected void doHttpDealForFragment(Observable observable) {
-
-        manager.httpDealForFragment(observable, this);
+        manager.httpDealForFragment(observable,this);
+    }
+    protected void doHttpDealForBackground(Observable observable) {
+        manager.httpDealForBackground(observable,this);
     }
     @Override
     public Observable getObservable(Retrofit retrofit) {

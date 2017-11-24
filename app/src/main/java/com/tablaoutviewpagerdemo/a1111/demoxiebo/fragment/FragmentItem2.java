@@ -26,6 +26,7 @@ import android.widget.Toast;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.tablaoutviewpagerdemo.a1111.demoxiebo.Common.FuzzyQuery.SearchAdapter;
+import com.tablaoutviewpagerdemo.a1111.demoxiebo.Common.MD5.SecretUtils;
 import com.tablaoutviewpagerdemo.a1111.demoxiebo.FeagmentActivity;
 import com.tablaoutviewpagerdemo.a1111.demoxiebo.FragmentFactory;
 import com.tablaoutviewpagerdemo.a1111.demoxiebo.Http.HttpPowerAPI.HttpPageCount;
@@ -54,6 +55,7 @@ import superlibrary.recycleview.SuperRecyclerView;
 import static android.R.attr.onClick;
 import static android.R.id.list;
 import static com.tablaoutviewpagerdemo.a1111.demoxiebo.FeagmentActivity.setButton;
+import static com.tablaoutviewpagerdemo.a1111.demoxiebo.Power.CommonPowerList.isFirstIntoFragment2;
 import static com.tablaoutviewpagerdemo.a1111.demoxiebo.Power.CommonPowerList.powerMonitorIdArrayList;
 import static com.tablaoutviewpagerdemo.a1111.demoxiebo.Power.CommonPowerList.substationInfoArrayList;
 import static com.tablaoutviewpagerdemo.a1111.demoxiebo.fragment.FragmentItem3Info.type;
@@ -76,7 +78,7 @@ public class FragmentItem2 extends BaseRxFragment{
     private int totalPage=100;
     private int page=1;
     private int count=13;
-    private HttpPowerApi httpPowerApi= new HttpPowerApi(this,this);;
+    private HttpPowerApi httpPowerApi= new HttpPowerApi(this,this);
     private boolean isRefresh=false;
     private String[] str =new String[]{"天津","天津"};
     private SuperRecyclerViewAdapter2 superRecyclerViewAdapter2;
@@ -85,13 +87,17 @@ public class FragmentItem2 extends BaseRxFragment{
         Log.e(TAG,"init---------"+TAG);
         FeagmentActivity.Num=0;
         setButton();
-        if(CommonPowerList.substationInfoArrayList.size()>0){
-            powerList=CommonPowerList.substationInfoArrayList;
-        }
         view = inflater.inflate(R.layout.fragment_item2,container,false);
         srv=view.findViewById(R.id.srv_item2);
         search=view.findViewById(R.id.search);
         imageView=view.findViewById(R.id.iv_item2_search);
+        if(isFirstIntoFragment2){
+            doWithStation(page);
+        }
+        if(CommonPowerList.substationInfoArrayList.size()>0){
+            powerList=CommonPowerList.substationInfoArrayList;
+        }
+
         searchAdapter=new SearchAdapter(getContext(),android.R.layout.simple_list_item_1,inloadngString(), SearchAdapter.ALL);
         search.setAdapter(searchAdapter);
         onClick();
@@ -175,8 +181,8 @@ public class FragmentItem2 extends BaseRxFragment{
         }
         Log.e(TAG,"stationId"+stationId);
         Log.e(TAG,"stationName"+stationName);
-        httpPowerApi.getStationList(true,CommonPowerList.GET_STSATIONLIST,CommonPowerList.BUSI_JCDZL,CommonPowerList.sercetKey,stationId,stationName,page,count);
-
+       // httpPowerApi.getStationList(CommonPowerList.isFragment,CommonPowerList.GET_STSATIONLIST,CommonPowerList.BUSI_JCDZL,CommonPowerList.sercetKey,stationId,stationName,page,count);
+        httpPowerApi.getObj(CommonPowerList.isFragment,CommonPowerList.GET_STSATIONLIST, SecretUtils.encrypt(httpPowerApi.getStationList(CommonPowerList.BUSI_JCDZL,stationId,stationName,page,count)));
     }
     private String getStationName(String name){
         String id="";
@@ -194,6 +200,9 @@ public class FragmentItem2 extends BaseRxFragment{
     @Override
     public void onNext(String resulte, String method) {
         if (method.equals(CommonPowerList.GET_STSATIONLIST)) {
+            if(isFirstIntoFragment2){
+                isFirstIntoFragment2=false;
+            }
             if(isRefresh){
                 Log.e(TAG,"onNextup");
                 powerList.clear();
@@ -226,6 +235,9 @@ public class FragmentItem2 extends BaseRxFragment{
     @Override
     public void onError(ApiException e, String method) {
         if(method.equals(CommonPowerList.GET_STSATIONLIST)){
+            if(isFirstIntoFragment2){
+                isFirstIntoFragment2=false;
+            }
             if(isRefresh){
                 srv.completeRefresh();
             }else{

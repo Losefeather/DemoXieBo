@@ -37,8 +37,11 @@
     <string name="clearcache">清理缓存</string>
     <string name="userinfo">用户信息</string>
     <string name="exit">退出</string>
+    <string name="exit_currentuser">退出当前用户</string>
     <string name="login_failed">登录失败</string>
+    <string name="logout_failed">登出失败</string>
     <string name="login_loading">登录中</string>
+    <string name="login_error">该用户已在其他移动设备登录</string>
     <!-- 地区名称-->
     <string name="tianjin">天津</string>
     <string name="wuqing">武清</string>

@@ -15,6 +15,7 @@ import android.view.ViewGroup;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.tablaoutviewpagerdemo.a1111.demoxiebo.Common.GetDateMethod.GetDateMethod;
+import com.tablaoutviewpagerdemo.a1111.demoxiebo.Common.MD5.SecretUtils;
 import com.tablaoutviewpagerdemo.a1111.demoxiebo.FeagmentActivity;
 import com.tablaoutviewpagerdemo.a1111.demoxiebo.FragmentFactory;
 import com.tablaoutviewpagerdemo.a1111.demoxiebo.Http.HttpPowerAPI.HttpPowerApi;
@@ -40,6 +41,7 @@ import java.text.DecimalFormat;
 
 import static com.tablaoutviewpagerdemo.a1111.demoxiebo.FeagmentActivity.setButton;
 import static com.tablaoutviewpagerdemo.a1111.demoxiebo.Power.CommonPowerList.areaTotalArrayList;
+import static com.tablaoutviewpagerdemo.a1111.demoxiebo.Power.CommonPowerList.isFirstIntoFragment4;
 
 /**
  * Created by a1111 on 17/9/30.
@@ -50,14 +52,16 @@ public class FragmentItem4 extends BaseRxFragment {
     private SuperRecyclerView rcv;
     private ArrayList<AreaTotal> list= new ArrayList<AreaTotal>();
     private SuperRecyclerViewAdapter srva;
-    private HttpPowerApi httpPowerApi;
+    private HttpPowerApi httpPowerApi= new HttpPowerApi(this,this);
     @Override
     public View onCreateView(LayoutInflater inflater,  ViewGroup container,  Bundle savedInstanceState) {
         FeagmentActivity.Num=0;
         setButton();
-         httpPowerApi = new HttpPowerApi(this,this);
+         if(isFirstIntoFragment4){
+             httpPowerApi.getObj(CommonPowerList.isFragment,CommonPowerList.GET_POWERLIST, SecretUtils.encrypt(httpPowerApi.getPowerList(CommonPowerList.BUSI_ZBGL,GetDateMethod.getBeforDate()+" 00:00:00",GetDateMethod.getBeforDate()+" 23:59:59")));
+         }
         if(CommonPowerList.areaTotalArrayList.size()>0){
-            list= areaTotalArrayList;
+            list= CommonPowerList.areaTotalArrayList;
         }
         view =inflater.inflate(R.layout.fragment_item4,container,false);
         rcv = view.findViewById(R.id.srv_item4);
@@ -72,7 +76,8 @@ public class FragmentItem4 extends BaseRxFragment {
         rcv.setLoadingListener(new SuperRecyclerView.LoadingListener() {
             @Override
             public void onRefresh() {
-                httpPowerApi.getPowerList(true,CommonPowerList.GET_POWERLIST,CommonPowerList.BUSI_ZBGL,CommonPowerList.sercetKey, GetDateMethod.getBeforDate()+" 00:00:00",GetDateMethod.getBeforDate()+" 23:59:59");
+                //httpPowerApi.getPowerList(CommonPowerList.isFragment,CommonPowerList.GET_POWERLIST,CommonPowerList.BUSI_ZBGL,CommonPowerList.sercetKey, GetDateMethod.getBeforDate()+" 00:00:00",GetDateMethod.getBeforDate()+" 23:59:59");
+                httpPowerApi.getObj(CommonPowerList.isFragment,CommonPowerList.GET_POWERLIST, SecretUtils.encrypt(httpPowerApi.getPowerList(CommonPowerList.BUSI_ZBGL,GetDateMethod.getBeforDate()+" 00:00:00",GetDateMethod.getBeforDate()+" 23:59:59")));
             }
 
             @Override
@@ -90,6 +95,9 @@ public class FragmentItem4 extends BaseRxFragment {
     @Override
     public void onNext(String resulte, String method) {
         if(method.equals(CommonPowerList.GET_POWERLIST)){
+            if(isFirstIntoFragment4){
+                isFirstIntoFragment4=false;
+            }
             list.clear();
             Gson gson = new Gson();
             Type type = new TypeToken<PowerResultEntity<List<AreaTotal>>>(){}.getType();
@@ -111,6 +119,11 @@ public class FragmentItem4 extends BaseRxFragment {
 
     @Override
     public void onError(ApiException e, String method) {
+        if(method.equals(CommonPowerList.GET_POWERLIST)) {
+            if (isFirstIntoFragment4) {
+                isFirstIntoFragment4 = false;
+            }
+        }
         super.onError(e, method);
     }
 

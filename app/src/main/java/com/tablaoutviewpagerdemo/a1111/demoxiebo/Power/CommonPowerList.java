@@ -22,6 +22,7 @@ public class CommonPowerList {
     public static String GET_TRANSIENTSTATEPOWERLIST="getTransientStatePowerList";
     public static String GET_TRANSIENTSTATEINFOLIST="getTransientStateInfoList";
     public static String GET_STSTIONINFOLIST="getStationIdList";
+    public static String GET_LOGOUT="getLogout";
     public static String BUSI_LOGIN="SysLoginBean@loginUser";
     public static String BUSI_ZBGL="HarmonicAppBean@getZBGL";
     public static String BUSI_JCDZL="HarmonicAppBean@getJCDZL";
@@ -30,6 +31,7 @@ public class CommonPowerList {
     public static String BUSI_WTGJXQ="HarmonicAppBean@getWTGJDetail";
     public static String BUSI_ZT="HarmonicAppBean@getZTCount";
     public static String BUSI_ZTXQ="HarmonicAppBean@getZTDetail";
+    public static String BUSI_LOGOUT="SysLoginBean@DestroyUserSession";
     public static ArrayList<AreaTotal> areaTotalArrayList= new ArrayList<AreaTotal>();
     public static ArrayList<Power> powerArrayList= new ArrayList<Power>();
     public static ArrayList<PowerMonitorPoint> powerMonitorPointArrayList= new ArrayList<PowerMonitorPoint>();
@@ -37,5 +39,13 @@ public class CommonPowerList {
     public static ArrayList<SubstationInfo> substationInfoArrayList = new ArrayList<SubstationInfo>();
     public static ArrayList<PowerMonitorId> powerMonitorIdArrayList = new ArrayList<PowerMonitorId>();
     public static ArrayList<SteadyStatePower> steadyStatePowerArrayList = new ArrayList<SteadyStatePower>();
-
+    public static int isFragment=0;
+    public static int isActitvy=1;
+    public static int isBackGround=2;
+    public static int isRxActitvy=3;
+    public static PowerLogin powerLogin = new PowerLogin();
+    public static boolean isFirstIntoFragment1=true;
+    public static boolean isFirstIntoFragment2=true;
+    public static boolean isFirstIntoFragment3=true;
+    public static boolean isFirstIntoFragment4=true;
 }

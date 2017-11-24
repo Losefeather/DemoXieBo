@@ -22,6 +22,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
 import com.tablaoutviewpagerdemo.a1111.demoxiebo.Common.GetDateMethod.GetDateMethod;
+import com.tablaoutviewpagerdemo.a1111.demoxiebo.Common.MD5.SecretUtils;
 import com.tablaoutviewpagerdemo.a1111.demoxiebo.FeagmentActivity;
 import com.tablaoutviewpagerdemo.a1111.demoxiebo.FragmentFactory;
 import com.tablaoutviewpagerdemo.a1111.demoxiebo.Http.HttpMessageEntity.BaseResultEntity;
@@ -40,6 +41,7 @@ import java.util.List;
 import java.util.Random;
 import static com.tablaoutviewpagerdemo.a1111.demoxiebo.FeagmentActivity.setButton;
 import static com.tablaoutviewpagerdemo.a1111.demoxiebo.FragmentFactory.getFragmentInstance;
+import static com.tablaoutviewpagerdemo.a1111.demoxiebo.Power.CommonPowerList.isFirstIntoFragment1;
 import static com.tablaoutviewpagerdemo.a1111.demoxiebo.Power.CommonPowerList.powerArrayList;
 
 /**
@@ -55,15 +57,17 @@ public class FragmentItem1 extends BaseRxFragment {
     private boolean isUp=true;
     private Spinner spinner;
     private ArrayAdapter<String> spinnerAdapter;
-    private HttpPowerApi httpPowerApi;
+    private HttpPowerApi httpPowerApi=new HttpPowerApi(this,this);
     @Override
     public View onCreateView(LayoutInflater inflater,  ViewGroup container,  Bundle savedInstanceState) {
         Log.e(TAG,"init---------"+TAG);
         FeagmentActivity.Num=0;
         setButton();
-        httpPowerApi=new HttpPowerApi(this,this);
+        if(isFirstIntoFragment1){
+            httpPowerApi.getObj(CommonPowerList.isFragment,CommonPowerList.GET_TRANSIENTSTATEPOWERLIST, SecretUtils.encrypt(httpPowerApi.getTransientStatePowerList(CommonPowerList.BUSI_ZT,GetDateMethod.getCurrentDate()+" 00:00:00",GetDateMethod.getBeforHour())));
+        }
          if(powerArrayList.size()>0){
-             powerList= powerArrayList;
+             powerList= CommonPowerList.powerArrayList;
          }
         view=inflater.inflate(R.layout.fragment_item1,container,false);
         rcv = view.findViewById(R.id.rcv);
@@ -105,7 +109,8 @@ public class FragmentItem1 extends BaseRxFragment {
         rcv.setLoadingListener(new SuperRecyclerView.LoadingListener() {
             @Override
             public void onRefresh() {
-                httpPowerApi.getTransientStatePowerList(true,CommonPowerList.GET_TRANSIENTSTATEPOWERLIST,CommonPowerList.BUSI_ZT,CommonPowerList.sercetKey, GetDateMethod.getCurrentDate()+" 00:00:00",GetDateMethod.getBeforHour());
+                //httpPowerApi.getTransientStatePowerList(CommonPowerList.isFragment,CommonPowerList.GET_TRANSIENTSTATEPOWERLIST,CommonPowerList.BUSI_ZT,CommonPowerList.sercetKey, GetDateMethod.getCurrentDate()+" 00:00:00",GetDateMethod.getBeforHour());
+                httpPowerApi.getObj(CommonPowerList.isFragment,CommonPowerList.GET_TRANSIENTSTATEPOWERLIST, SecretUtils.encrypt(httpPowerApi.getTransientStatePowerList(CommonPowerList.BUSI_ZT,GetDateMethod.getCurrentDate()+" 00:00:00",GetDateMethod.getBeforHour())));
             }
 
             @Override
@@ -167,6 +172,9 @@ public class FragmentItem1 extends BaseRxFragment {
     public void onNext(String resulte, String method) {
         powerArrayList.clear();
         if(method.equals(CommonPowerList.GET_TRANSIENTSTATEPOWERLIST)){
+            if(isFirstIntoFragment1){
+                isFirstIntoFragment1=false;
+            }
             Gson gson = new Gson();
             Type type = new TypeToken<PowerResultEntity<List<Power>>>(){}.getType();
             PowerResultEntity<List<Power>> baseInfo=gson.fromJson(resulte,type);
@@ -180,12 +188,17 @@ public class FragmentItem1 extends BaseRxFragment {
 
     @Override
     public void onError(ApiException e, String method) {
+        if(method.equals(CommonPowerList.GET_TRANSIENTSTATEPOWERLIST)) {
+            if (isFirstIntoFragment1) {
+                isFirstIntoFragment1 = false;
+            }
+        }
         super.onError(e, method);
     }
 
     @Override
     public void onDestroyView() {
-        CommonPowerList.powerArrayList=this.powerList;
+        CommonPowerList.powerArrayList=powerList;
         super.onDestroyView();
     }
 }
